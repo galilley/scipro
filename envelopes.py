@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from scipro import SciPro
+from field import Field
 from numpy import array, linspace, exp, log, pi, complex, where, select
 from numpy.fft import *
 
@@ -23,7 +24,7 @@ def gaussianField( freq0, width, lev=0.5, xmax=None, num=None):
 	else:
 		return None
 	y = y*exp(1j*2*pi*freq0*x)
-	return SciPro(x,y)
+	return Field(x,y)
 
 def gaussianIntensity(width, lev=0.5, xmax=1., num=1024):
 	'''gaussianIntensity(width, lev=0.5, xmax=1., num=1024)'''
@@ -64,7 +65,7 @@ def gaussianFieldChirped( freq0, width, beta2, lev=0.5, xmax=None, num=None):
 	freq = fftfreq( len(y), d=abs(x[1]-x[0]))
 	ffy = ffy*exp(1j*beta2/2.*(2*pi*(freq-freq0))**2)
 	y = ifft(ffy)
-	return SciPro(x,y)
+	return Field(x,y)
 
 def gaussianIntensityChirped( width, beta2, lev=0.5, xmax=None, num=None):
 	'''gaussianIntensityChirped( width, beta2, lev=0.5, xmax=None, num=None)'''

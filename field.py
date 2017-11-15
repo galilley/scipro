@@ -92,7 +92,7 @@ class Field(SciPro):
         #    keywords['xl'] = 'Wavelength, nm'
         #if not keywords.has_key( 'yl'):
         #    keywords['yl'] = 'Intensity, a.u.'
-        if keywords.has_key( 'ptype'):
+        if keywords.has_key( 'pform'):
             pform = keywords.pop('pform')
         else:
             pform = 'abs'
@@ -117,6 +117,7 @@ class Field(SciPro):
             ax2.plot( self.x, self.phase().phasemerging(pgap).y, *arguments, **keywords)
             ax1.set_ylabel('Intensity, |A|**2')
             ax2.set_ylabel('Phase, rad')
+            pl.sca(ax1)
         elif pform == 'real':
             pl.plot(self.x, real(self.y), *arguments, **keywords)
         elif pform == 'imag':

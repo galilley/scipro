@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from scipro import SciPro
-from numpy import arange, array, append, int32, double, linspace, select, diff,interp,where,zeros
+from numpy import arange, array, append, int32, double, linspace, select, diff,interp,where,zeros,log10
 from numpy.fft import *
 from constants import *
 #from oscillogram import Oscillogram

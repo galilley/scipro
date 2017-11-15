@@ -7,6 +7,7 @@ from fpformat import *
 from types import *
 from constants import *
 from numpy.fft import *
+import inspect
 
 class SciPro:
 	'''this class allow analyze scientific data'''
@@ -22,9 +23,16 @@ class SciPro:
 			self.y = x[1]
 			self.dtype = type(x[1])
 		else:
-			self.x = x
-			self.y = y
-			self.dtype = type(y)
+			try:
+				self.x = x.x
+				self.y = x.y
+				self.xtype = x.xtype
+				self.ytype = x.ytype
+				self.dtype = type(x.y)
+			except:
+				self.x = x
+				self.y = y
+				self.dtype = type(y)
 	
 	def __add__(self, var):
 		if type(var) is InstanceType:
@@ -48,7 +56,12 @@ class SciPro:
 			y = a.y+var
 		else:
 			return None
-		return SciPro(a.x, y, a.ytype, a.xtype)
+		retval = self.copy()
+		retval.x = a.x
+		retval.y = y
+		retval.xtype = a.xtype
+		retval.ytype = a.ytype
+		return retval
 
 	def __iadd__(self, var):
 		if type(var) is InstanceType:
@@ -92,7 +105,12 @@ class SciPro:
 			y = a.y-var
 		else:
 			return None
-		return SciPro(a.x, y, a.ytype, a.xtype)
+		retval = self.copy()
+		retval.x = a.x
+		retval.y = y
+		retval.xtype = a.xtype
+		retval.ytype = a.ytype
+		return retval
 	
 	def __isub__(self, var):
 		if type(var) is InstanceType:
@@ -193,6 +211,10 @@ class SciPro:
 				pass
 		return self
 
+	def __getitem__(self, a): #TODO
+		print a
+		raise AttributeError
+
 	def value(self, x):
 		ind = searchsorted( self.x, x)
 		return self.y[ind]
@@ -252,7 +274,7 @@ class SciPro:
 		else:
 			dx = (abs(self.x[-1]-self.x[0])-dnum*(num-1))/2.
 			retval.x = linspace(self.x[0]+dx, self.x[-1]-dx, num)
-		retval.y = interp(x, self.x, self.y)
+		retval.y = interp(retval.x, self.x, self.y)
 		return retval
 	
 	def bandwidth(self, lev = -3.):
@@ -355,6 +377,10 @@ class SciPro:
 	def xPeak(self):
 		'''return x with peak intensity'''
 		return self.x[where(self.y==max(self.y))[0][0]]
+	
+	def weightedMean(self):
+		'''return mean X weighted by Y'''
+		return (self.x*self.y).sum()/self.y.sum()
 
 	def xMin(self):
 		'''return x with min intensity'''

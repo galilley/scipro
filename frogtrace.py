@@ -87,12 +87,12 @@ class FROGTrace(SciPro):
     def plot(self, *arguments, **keywords):
         '''fuction to plot self spectr\nplot(ptype = 'lin', xl = 'Wavelength, nm', yl = 'Intensity, a.u.')'''
         from matplotlib import cm
-        from pylab import colorbar, pcolor, xlabel, ylabel
+        from pylab import colorbar, pcolormesh, xlabel, ylabel
         if not keywords.has_key( 'xl'):
             keywords['xl'] = 'Time, ps'
         if not keywords.has_key( 'yl'):
             keywords['yl'] = 'Wavelength, nm'
-        surf = pcolor(self.x[0], self.x[1], self.y, cmap=cm.rainbow)
+        surf = pcolormesh(self.x[0], self.x[1], self.y, cmap=cm.rainbow)
         colorbar(surf)
         xlabel(keywords['xl'])
         ylabel(keywords['yl'])

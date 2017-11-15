@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from numpy import array, append, flipud, log10, double
+from numpy import array, append, double
 from string import atof
 
 def fread(filename):
