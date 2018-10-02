@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-workpath = '/home/galilley/Documents/ИАЭ/5k2/080924 FBG for japan'
-FBGpath = '/home/galilley/Documents/ИАЭ/5k2/080924 FBG for japan/data'
-syspath = '/home/galilley/Documents/ИАЭ/5k2/080924 FBG for japan/python'
+workpath = '../080924 FBG for japan'
+FBGpath = '../080924 FBG for japan/data'
+syspath = '../080924 FBG for japan/python'
 fnresult = workpath+'/'+'fbg.csv'
 
 isplotvar = True
@@ -105,13 +105,13 @@ if isplotvar:
         sn = fnfbgr[i].split('_')[1]
         gp.title(sn+' reflect')
         gp('set output '+'\''+imgdir+'/'+'GDF1060_'+sn+'_r'+ftype+'\'')
-        gp.plot(Gnuplot.Data(spfbgr[i].wl, spfbgr[i].logI, with='p pt 7'))
+        gp.plot(Gnuplot.Data(spfbgr[i].wl, spfbgr[i].logI, with_='p pt 7'))
 
     gp.ylabel('Transmitted Power [dBm]')
     for i in xrange(len(fnfbgr)):
         sn = fnfbgt[i].split('_')[1]
         gp.title(sn+' transmit')
         gp('set output '+'\''+imgdir+'/'+'GDF1060_'+sn+'_t'+ftype+'\'')
-        gp.plot(Gnuplot.Data(spfbgt[i].wl, spfbgt[i].logI, with='p pt 7'))
+        gp.plot(Gnuplot.Data(spfbgt[i].wl, spfbgt[i].logI, with_='p pt 7'))
     
     gp('set output')

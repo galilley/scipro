@@ -2,7 +2,6 @@
 
 import copy
 from numpy import double, ndarray, searchsorted, delete, s_, mean
-from types import ListType
 from scipro import SciPro
 from acf import ACF
 #from constants import *
@@ -28,7 +27,7 @@ class FROGTrace(SciPro):
             retval = self.copy()
             retbuf = self.copy()
             for a in arguments:
-                if type(a) is ListType or type(a) is ndarray:
+                if type(a) is type([]) or type(a) is ndarray:
                     for suba in a:
                         ind = searchsorted( retbuf.x[1].T[0], suba)
                         if ind != 0:
@@ -92,7 +91,7 @@ class FROGTrace(SciPro):
             keywords['xl'] = 'Time, ps'
         if not keywords.has_key( 'yl'):
             keywords['yl'] = 'Wavelength, nm'
-        surf = pcolormesh(self.x[0], self.x[1], self.y, cmap=cm.rainbow)
+        surf = pcolormesh(self.x[0], self.x[1], self.y, cmap=cm.rainbow) #cm.nipy_spectral
         colorbar(surf)
         xlabel(keywords['xl'])
         ylabel(keywords['yl'])

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from numpy import array, append, double
-from string import atof
+from numpy import array, double
 
 def fread(filename):
 	'''This function read data from Irtac .dat files'''
@@ -13,28 +12,29 @@ def fread(filename):
 	
 	fstr = fp.readline()	#read title
 	
-	datay = array([], dtype=double)
+	datay = []
 	fstr = fp.readline()
 	while fstr:
 		if fstr.strip() == '': 
 			break
 		fstr = fstr.strip().split('\t')
-		datay = append(datay, atof(fstr[1]))
+		datay.append(fstr[1])
 		fstr = fp.readline()
+	datay = array(datay).astype(double)
 	
 	while not fstr.strip() == 'Series: Position':
 		fstr = fp.readline()
 	
 	fstr = fp.readline()	#read title
 	
-	datax = array([], dtype=double)
+	datax = []
 	fstr = fp.readline()
 	while fstr:
 		if fstr.strip() == '': 
 			break
 		fstr = fstr.strip().split('\t')
-		datax = append(datax, atof(fstr[1]))
-		fstr = fp.readline()	
+		datax.append(fstr[1])
+		fstr = fp.readline()
 	
 	fp.close()
 	return datax, datay
@@ -49,16 +49,18 @@ def freadxy(filename):
 	
 	fstr = fp.readline()	#read title
 	
-	datax = array([], dtype=double)
-	datay = array([], dtype=double)
+	datax = []
+	datay = []
 	fstr = fp.readline()
 	while fstr:
 		if fstr.strip() == '': 
 			break
 		fstr = fstr.strip().split('\t')
-		datax = append(datax, atof(fstr[0]))
-		datay = append(datay, atof(fstr[1]))
+		datax.append(fstr[0])
+		datay.append(fstr[1])
 		fstr = fp.readline()
-	
 	fp.close()
+	datax = array(datax).astype(double)
+	datay = array(datay).astype(double)
+
 	return datax, datay

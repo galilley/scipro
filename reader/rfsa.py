@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from numpy import array, append, flipud, log10, double
-from string import atof
-from ..spectrum import *
+from numpy import array, append, double
+from ..spectrum import Spectrum
 
 def fread(filename):
 	'''This function read data from trace'x file of RF-Spectrum Analyzer'''
@@ -21,16 +20,19 @@ def fread(filename):
 				print 'lin'
 		fstr = fp.readline()
 			
-	datax = array([], dtype = double)
-	datay = array([], dtype = double)
+	datax = []
+	datay = []
 	fstr = fp.readline()
 	while fstr:
 		if fstr.strip() == '': 
 			break
 		fstr = fstr.strip().split(',')
-		datax = append(datax, atof(fstr[0]))
-		datay = append(datay, atof(fstr[1]))
+		datax.append(fstr[0])
+		datay.append(fstr[1])
 		fstr = fp.readline()
+	fp.close()
+	datax = array(datax).astype(double)
+	datay = array(datay).astype(double)
 	
 	return Spectrum( datax, datay, ytype=ytype, xtype=xtype)
 

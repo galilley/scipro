@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from numpy import array, append, flipud, log10, double, arange
-from string import atof, atoi
 from array import array as ar
 from .. oscillogram import Oscillogram
 
@@ -111,6 +110,8 @@ def freadtrc(filename):
 
     d = ar('b')
     d.fromfile( fp, sizetoread)
+
+    fp.close()
 
     datay = array( d.tolist())*dy-yoffset
     datax = arange( len(datay))*dt

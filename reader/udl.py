@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 #Unifed Data Loader
 
-from numpy import array, append, flipud, log10, double
-from string import atof, atoi, join
+from numpy import array, double
 import gzip
 import bz2
 
@@ -91,8 +90,8 @@ def fread(filename):
 	#strip by column num if needed
 	if delimlist[inddelim] is not '':
 		if len(filedata[0].split(delimlist[inddelim])) != colcnt:
-			filedata = [join( s.split(delimlist[inddelim])[:colcnt], delimlist[inddelim]) for s in filedata]
-		filedata = array( join( filedata, delimlist[inddelim]).split(delimlist[inddelim]))
+			filedata = [ delimlist[inddelim].join( s.split(delimlist[inddelim])[:colcnt]) for s in filedata]
+		filedata = array( delimlist[inddelim].join( filedata ).split(delimlist[inddelim]))
 	else:
 		filedata = array( filedata)
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from numpy import array, append, flipud, log10, double
-from string import atof, atoi
 from ..spectrum import *
 
 def fread(filename):
@@ -18,23 +17,26 @@ def fread(filename):
 		if fstr.find('\"BASEL\"') == 0:
 			ytype = 'lin'
 		if fstr.find('\"RESLN\"') == 0:
-			resln = atof(fstr.split(',')[1])
+			resln = float(fstr.split(',')[1])
 		if fstr.find('\"LSUNT\"') == 0:
-			lsunt = atoi(fstr.split(',')[1])
+			lsunt = int(fstr.split(',')[1])
 		if fstr is None:
 			break
 		fstr = fp.readline()
 			
-	datax = array([], dtype = double)
-	datay = array([], dtype = double)
+	datax = []
+	datay = []
 	fstr = fp.readline()
 	while fstr:
 		if fstr.strip() == '': 
 			break
 		fstr = fstr.strip().split(',')
-		datax = append(datax, atof(fstr[0]))
-		datay = append(datay, atof(fstr[1]))
+		datax.append(fstr[0])
+		datay.append(fstr[1])
 		fstr = fp.readline()
+	fp.close()
+	datax = array(datax).astype(double)
+	datay = array(datay).astype(double)
 
 	if lsunt == 0:
 		if resln != 0.0:

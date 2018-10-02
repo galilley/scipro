@@ -3,8 +3,6 @@
 from pylab import plot,grid,show,xlabel,ylabel,clf
 from numpy import alltrue, array, log10, linspace, ndarray, where, append, arange, insert, delete, searchsorted, int32, double, ones, zeros, zeros_like, concatenate, s_, std, arctan2, imag, real, pi, equal
 from scipy import integrate, optimize, interp
-from fpformat import *
-from types import *
 from constants import *
 from numpy.fft import *
 import inspect
@@ -15,10 +13,10 @@ class SciPro:
 		self.ytype = ytype
 		self.xtype = xtype
 		self.dtype = dtype
-		if x == None and y == None:
+		if x is None and y is None:
 			self.x = array([], dtype)
 			self.y = array([], dtype)
-		elif (type(x) is ListType or type(x) is ndarray or type(x) is tuple) and (len(x) == 2) and (y is None):
+		elif (type(x) is list or type(x) is ndarray or type(x) is tuple) and (len(x) == 2) and (y is None):
 			self.x = x[0]
 			self.y = x[1]
 			self.dtype = type(x[1])
@@ -35,7 +33,7 @@ class SciPro:
 				self.dtype = type(y)
 	
 	def __add__(self, var):
-		if type(var) is InstanceType:
+		if type(var) is type(self):
 			if self.ytype is 'log':
 				a = self.convytype( 'lin')
 			else:
@@ -48,7 +46,7 @@ class SciPro:
 				y = a.y+b.y
 			else:
 				y = a.y+interp(a.x, b.x, b.y, left=0., right=0.)
-		elif type(var) is IntType or FloatType:
+		elif type(var) is int or float:
 			if self.ytype is 'log':
 				a = self.convytype( 'lin')
 			else:
@@ -64,7 +62,7 @@ class SciPro:
 		return retval
 
 	def __iadd__(self, var):
-		if type(var) is InstanceType:
+		if type(var) is type(self):
 			if self.ytype is 'log':
 				self.setytype( 'lin')
 			if var.ytype is 'log':
@@ -75,7 +73,7 @@ class SciPro:
 				self.y += b.y
 			else:
 				self.y += interp(self.x, b.x, b.y, left=0., right=0.)
-		elif type(var) is IntType or FloatType:
+		elif type(var) is int or float:
 			if self.ytype is 'log':
 				self.setytype( 'lin')
 			self.y+=var
@@ -84,7 +82,7 @@ class SciPro:
 		return self
 	
 	def __sub__(self, var):
-		if type(var) is InstanceType:
+		if type(var) is type(self):
 			if self.ytype is 'log':
 				a = self.convytype( 'lin')
 			else:
@@ -97,7 +95,7 @@ class SciPro:
 				y = a.y-b.y
 			else:
 				y = a.y-interp(a.x, b.x, b.y, left=0., right=0.)
-		elif type(var) is IntType or FloatType:
+		elif type(var) is int or float:
 			if self.ytype is 'log':
 				a = self.convytype( 'lin')
 			else:
@@ -113,7 +111,7 @@ class SciPro:
 		return retval
 	
 	def __isub__(self, var):
-		if type(var) is InstanceType:
+		if type(var) is type(self):
 			if self.ytype is 'log':
 				self.setytype( 'lin')
 			if var.ytype is 'log':
@@ -124,7 +122,7 @@ class SciPro:
 				self.y -= b.y
 			else:
 				self.y -= interp(self.x, b.x, b.y, left=0., right=0.)
-		elif type(var) is IntType or FloatType:
+		elif type(var) is int or float:
 			if self.ytype is 'log':
 				self.setytype( 'lin')
 			self.y-=var
@@ -142,7 +140,7 @@ class SciPro:
 		return retval
 
 	def __mul__(self, var):
-		if type(var) is InstanceType:
+		if type(var) is type(self):
 			if self.ytype is 'lin':
 				if equal(self.x, var.x).prod():
 					y = self.y*var.y
@@ -153,7 +151,7 @@ class SciPro:
 					y = self.y + var.y
 				else:
 					y = self.y+interp(self.x, var.x, var.y, left=0., right=0.)
-		elif type(var) is IntType or FloatType:
+		elif type(var) is int or float:
 			if self.ytype is 'lin':
 				y = self.y*var
 			else:
@@ -165,12 +163,12 @@ class SciPro:
 		return retval
 	
 	def __imul__(self, var):
-		if type(var) is InstanceType:
+		if type(var) is type(self):
 			if self.ytype is 'lin':
 				self.y*=interp(self.x, var.x, var.y, left=0., right=0.)
 			else:
 				self.y+=interp(self.x, var.x, var.y, left=0., right=0.)
-		elif type(var) is IntType or FloatType:
+		elif type(var) is int or float:
 			if self.ytype is 'lin':
 				self.y*=var
 			else:
@@ -180,12 +178,12 @@ class SciPro:
 		return self
 	
 	def __div__(self, var):
-		if type(var) is InstanceType:
+		if type(var) is type(self):
 			if self.ytype is 'lin':
 				y = self.y/interp(self.x, var.x, var.y, left=0., right=0.)
 			else:
 				y = self.y-interp(self.x, var.x, var.y, left=0., right=0.)
-		elif type(var) is IntType or FloatType:
+		elif type(var) is int or float:
 			if self.ytype is 'lin':
 				y = self.y/var
 			else:
@@ -197,12 +195,12 @@ class SciPro:
 		return retval
 	
 	def __idiv__(self ,var):
-		if type(var) is InstanceType:
+		if type(var) is type(self):
 			if self.ytype is 'lin':
 				self.linI/=interp(self.x, var.x, var.y, left=0., right=0.)
 			else:
 				self.logI-=interp(self.x, var.x, var.y, left=0., right=0.)
-		elif type(var) is IntType or FloatType:
+		elif type(var) is int or float:
 			if self.ytype is 'lin':
 				self.y/=var
 			else:
@@ -369,9 +367,9 @@ class SciPro:
 		retval.ytype = ytype
 		return retval
 
-	def cutMin(self):
+	def cutMin(self, inds = slice(None)):
 		retval = self.copy()
-		retval.y = self.y - min(self.y)
+		retval.y = self.y - min(self.y[inds])
 		return retval
 
 	def xPeak(self):
@@ -559,7 +557,7 @@ class SciPro:
 	
 	def smoothing(self, num=50):
 		sum = 0.0
-		num = round(num/2.)*2-1
+		num = int(round(num/2.))*2-1
 		if num <= 1:
 			return self
 		smy = arange(self.x.size, dtype=double)
@@ -583,7 +581,7 @@ class SciPro:
 		return self.smoothing( num)
 	
 	def movingStd(self, num):
-		num = round(num/2.)*2-1
+		num = int(round(num/2.))*2-1
 		if num <= 1:
 			return self
 		mvy = arange(self.x.size, dtype=double)
@@ -604,7 +602,7 @@ class SciPro:
 			retval = self.copy()
 			retbuf = self.copy()
 			for a in arguments:
-				if type(a) is ListType or type(a) is ndarray:
+				if type(a) is list or type(a) is ndarray:
 					for suba in a:
 						ind = searchsorted( retbuf.x, suba)
 						if ind != 0:
@@ -669,7 +667,7 @@ class SciPro:
 		return retlist
 
 	def merging( self, var, p0 = 1000):
-		if type(var) is InstanceType:
+		if type(var) is type(self):
 			if len(self.x) < len(var.x):
 				num = len(self.x)/4
 			else:
@@ -720,7 +718,7 @@ class SciPro:
 		clf()
 
 	def save(self, filename = None):
-		if filename == None:
+		if filename is None:
 			print 'Can\'t save: undefined filename'
 			return False
 		d = array([self.x, self.y]).T
@@ -728,7 +726,7 @@ class SciPro:
 		return True
 
 	def open(self, filename = None):
-		if filename == None:
+		if filename is None:
 				print 'Can\'t save: undefined filename'
 				return False
 		d = fromfile( filename + ".bin").reshape(-1,2).T
