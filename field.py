@@ -5,7 +5,7 @@ from scipy import optimize
 from scipro import SciPro
 from spectrum import Spectrum
 from oscillogram import Oscillogram
-from numpy.fft import fft,ifft,fftshift
+from numpy.fft import fft,ifft,fftshift,fftfreq
 import pylab as pl
 
 class Field(SciPro):
@@ -21,11 +21,11 @@ class Field(SciPro):
             x = x[0]
             yform = 'alg'
         if yform is 'complex':
-		    SciPro.__init__(self, x, yr, ytype = 'lin', xtype = 'lin', dtype=complex64)
+            SciPro.__init__(self, x, yr, ytype = 'lin', xtype = 'lin', dtype=complex64)
         elif yform is 'alg':
-		    SciPro.__init__(self, x, yr + 1j*yi, ytype = 'lin', xtype = 'lin', dtype=complex64)
+            SciPro.__init__(self, x, yr + 1j*yi, ytype = 'lin', xtype = 'lin', dtype=complex64)
         elif yform is 'exp':
-		    SciPro.__init__(self, x, yr*exp(1j*yr), ytype = 'lin', xtype = 'lin', dtype=complex64)
+            SciPro.__init__(self, x, yr*exp(1j*yr), ytype = 'lin', xtype = 'lin', dtype=complex64)
         else:
             print('unknown yform')
 	
@@ -73,8 +73,8 @@ class Field(SciPro):
     def fft(self):
         '''Fast Fourier transform'''
         retval = self.copy()
-        fmin = abs(self.x[1]-self.x[0])
-        retval.x = linspace(-0.5/fmin, 0.5/fmin, self.x.size)
+        dt = abs(self.x[1]-self.x[0])
+        retval.x = fftfreq(self.x.size, dt)
         retval.y = fftshift( fft( self.y))
         return retval
     
