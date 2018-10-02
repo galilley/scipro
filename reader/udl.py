@@ -5,12 +5,12 @@ from numpy import array, double
 import gzip
 import bz2
 
-delimlist = ['', ' ', ',', '\t', ';']
+delimlist = [None, b' ', b',', b'\t', b';']
 
 def fread(filename):
 	'''This function read data from abstract file'''
 	if filename.lower().endswith('.gz'):
-		fp = gzip.open(filename, 'r')
+		fp = gzip.GzipFile(filename, 'r')
 	elif filename.lower().endswith('.bz2'):
 		fp = bz2.BZ2File(filename, 'r')
 	else:
@@ -52,7 +52,7 @@ def fread(filename):
 	if colcnt == 0:
 		return None
 	print("colcnt", colcnt)
-	print("delimeter", delimlist[inddelim])
+	print("delimiter", delimlist[inddelim])
 
 	d = []
 	for i in xrange(colcnt):
