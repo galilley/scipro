@@ -14,12 +14,15 @@ class Field(SciPro):
         complex [yr] (default)
         alg [yr+j*yi], 
         exp [yr*exp(j*yi)]'''
-    def __init__(self, x = None, yr = None, yi = None, yform = 'complex'):
+    def __init__(self, x = None, yr = None, yi = None, yform = None):
         if yr is None and yi is None:
             yi = x[2]
             yr = x[1]
             x = x[0]
-            yform = 'alg'
+            if yform is None:
+                yform = 'alg'
+        if yform is None:
+            yform = 'complex'
         if yform is 'complex':
             SciPro.__init__(self, x, yr, ytype = 'lin', xtype = 'lin', dtype=complex64)
         elif yform is 'alg':
@@ -88,6 +91,7 @@ class Field(SciPro):
 
     def plot(self, *arguments, **keywords):
         '''fuction to plot self spectr\nplot(ptype = 'lin', xl = 'Wavelength, nm', yl = 'Intensity, a.u.')'''
+        #TODO ptype = log
         #if not keywords.has_key( 'xl'):
         #    keywords['xl'] = 'Wavelength, nm'
         #if not keywords.has_key( 'yl'):
@@ -119,9 +123,9 @@ class Field(SciPro):
             ax2.set_ylabel('Phase, rad')
             pl.sca(ax1)
         elif pform == 'real':
-            pl.plot(self.x, real(self.y), *arguments, **keywords)
+            super(Field, self).plot(self.x, real(self.y), *arguments, **keywords)
         elif pform == 'imag':
-            pl.plot(self.x, imag(self.y), *arguments, **keywords)
+            super(Field, self).plot(self.x, imag(self.y), *arguments, **keywords)
         else:
             print 'Unknown type '+type+', use \"abs\",\"real\" or \"imag\"'
 
