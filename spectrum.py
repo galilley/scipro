@@ -2,6 +2,7 @@
 
 from scipro import SciPro
 from numpy import arange, array, append, int32, double, linspace, select, diff,interp,where,zeros,log10
+from scipy import integrate
 from numpy.fft import *
 from constants import *
 #from oscillogram import Oscillogram
@@ -90,9 +91,10 @@ class Spectrum(SciPro):
 		self.delta2 = self.p[2]
 		return self.p
 
-	def omega2mean(self):
-		x0 = self.lmean()
-		return integrate.trapz(self.y*(self.x-x0)**2, self.x)/integrate.trapz(self.y, self.x)
+	def omega2mean(self, x0 = None):
+		if x0 is None:
+			x0 = self.lmean()
+		return integrate.trapz(self.tolin().y*(self.x-x0)**2, self.x)/integrate.trapz(self.tolin().y, self.x)
 
 	def fft(self, fakerange = 1.):
 		'''return time domain in ps'''

@@ -7,7 +7,7 @@ from constants import *
 from numpy.fft import *
 import inspect
 
-class SciPro:
+class SciPro(object):
 	'''this class allow analyze scientific data'''
 	def __init__(self, x = None, y = None, ytype = 'lin', xtype = 'lin', dtype=double):
 		self.ytype = ytype
