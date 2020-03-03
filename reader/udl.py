@@ -5,7 +5,7 @@ from numpy import array, double
 import gzip
 import bz2
 
-delimlist = [None, b' ', b',', b'\t', b';']
+delimlist = [b' ', b',', b'\t', b';', None]
 
 def fread(filename):
 	'''This function read data from abstract file'''
