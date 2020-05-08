@@ -88,7 +88,7 @@ def fread(filename):
 		filedata = [s.replace(',', '.') for s in filedata]
 
 	#strip by column num if needed
-	if delimlist[inddelim] is not '':
+	if delimlist[inddelim] != '':
 		if len(filedata[0].split(delimlist[inddelim])) != colcnt:
 			filedata = [ delimlist[inddelim].join( s.split(delimlist[inddelim])[:colcnt]) for s in filedata]
 		filedata = array( delimlist[inddelim].join( filedata ).split(delimlist[inddelim]))
@@ -96,9 +96,9 @@ def fread(filename):
 		filedata = array( filedata)
 
 	fp.close()
-
+        
 	#strip last empty strings if needed
-	while filedata[-1].strip() is '':
+	while filedata[-1].strip() == '':
 		filedata = filedata[:-1]
 
 	d = filedata.astype(double).reshape(-1, colcnt).T
@@ -114,7 +114,7 @@ def rm_empty(l):
 	return l
 
 def check_columns4float( dstr, dlt):
-	if dlt is not '':
+	if dlt != '':
 		sl = dstr.split(dlt)
 	else:
 		sl = [dstr]
@@ -131,7 +131,7 @@ def check_columns4float( dstr, dlt):
 	return cnt
 
 def check_delimiter4float( dstr, dlt):
-	if dlt is not '':
+	if dlt != '':
 		sl = dstr.split(dlt)
 	else:
 		sl = [dstr]
