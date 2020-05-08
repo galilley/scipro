@@ -77,7 +77,7 @@ class Field(SciPro):
         '''Fast Fourier transform'''
         retval = self.copy()
         dt = abs(self.x[1]-self.x[0])
-        retval.x = fftfreq(self.x.size, dt)
+        retval.x = fftshift( fftfreq(self.x.size, dt))
         retval.y = fftshift( fft( self.y))
         return retval
     
