@@ -457,10 +457,9 @@ class SciPro(object):
 			return integrate.trapz(10.**(self.y/10.)*(self.x-x0)**2, self.x)/integrate.trapz(10.**(self.y/10.), self.x)
 	
 	def reverse(self):
-		inds = int32(linspace(self.x.size-1,0,self.x.size))
 		retval = self.copy()
-		retval.x = self.x.take(inds)
-		retval.y = self.y.take(inds)
+		retval.x = retval.x[::-1]
+		retval.y = retval.y[::-1]
 		return retval
 	
 	def fft(self, fakerange = 1.):

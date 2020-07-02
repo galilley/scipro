@@ -41,17 +41,23 @@ class Spectrum(SciPro):
 		'''convert self x axis [wl, nm] to [freq, THz]'''
 		if self.xtype is 'wl':
 			x = LIGHT_SPEED/self.x*1e-3
+			x = x[::-1]
+			y = self.y.copy()[::-1]
 		else:
-			x = self.x.copy()
-		return Spectrum(x, self.y.copy(), ytype = self.ytype, xtype = 'freq')
+			x = self.x
+			y = self.y
+		return Spectrum(x, y, ytype = self.ytype, xtype = 'freq')
 
 	def towl(self):
 		'''convert self x axis [freq, THz] to [wl, nm]'''
 		if self.xtype is 'freq':
 			x = LIGHT_SPEED/self.x*1e-3
+			x = x[::-1]
+			y = self.y.copy()[::-1]
 		else:
-			x = self.x.copy()
-		return Spectrum(x, self.y.copy(), ytype = self.ytype, xtype = 'wl')
+			x = self.x
+			y = self.y
+		return Spectrum(x, y, ytype = self.ytype, xtype = 'wl')
 
 	def fwhm(self):
 		'''return FWHM [nm] parameter of specter'''
