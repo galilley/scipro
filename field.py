@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from numpy import exp,complex64,pi,arctan2,real,imag,linspace,zeros
+from numpy import exp,complex64,pi,arctan2,real,imag,linspace,zeros,diff
 from scipy import optimize
 from scipro import SciPro
 from spectrum import Spectrum
@@ -51,6 +51,11 @@ class Field(SciPro):
         retval.y = arctan2(imag(self.y), real(self.y))
         return retval
 
+    def instfreq(self):
+        retval = self.copy()
+        retval.y = diff(self.phase().phasemerging().y)/(-2*pi*abs(self.x[-1]-self.x[0])/(len(self.x)-1))
+        return retval
+
     def add_phase(self, ph = [0.]):
         retval = self.copy()
         phase = zeros(self.x.size)
@@ -76,7 +81,7 @@ class Field(SciPro):
     def fft(self):
         '''Fast Fourier transform'''
         retval = self.copy()
-        dt = abs(self.x[1]-self.x[0])
+        dt = abs(self.x[-1]-self.x[0])/(len(self.x)-1)
         retval.x = fftshift( fftfreq(self.x.size, dt))
         retval.y = fftshift( fft( self.y))
         return retval
@@ -84,7 +89,7 @@ class Field(SciPro):
     def ifft(self):
         '''inverse Fast Fourier transform'''
         retval = self.copy()
-        fmin = abs(self.x[1]-self.x[0])
+        fmin = abs(self.x[-1]-self.x[0])/(len(self.x)-1)
         retval.x = linspace(-0.5/fmin, 0.5/fmin, self.x.size)
         retval.y = ifft( fftshift(self.y))
         return retval
