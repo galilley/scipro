@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from scipro import SciPro
-from field import Field
+from .scipro import SciPro
+from .field import Field
 from numpy import array, linspace, exp, log, pi, complex, where, select
 from numpy.fft import *
 

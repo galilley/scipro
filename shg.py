@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from optics import spectrum
+from .optics import spectrum
 from numpy import sin, mod, linspace, arange, select, log10, pi
 
 crystalLength = 9.45*10**6
@@ -51,7 +51,7 @@ def mfshg(fh = None): #fh := FirstHarmonic
     sh.logI.fill(0.0)
     sh.freqtowl()
 
-    for n in xrange(len(sh.freq)):   #n = 1..shPoints
+    for n in range(len(sh.freq)):   #n = 1..shPoints
         p = 0.0 #variable to store power to add to array
 
         #0 if n is even
@@ -60,7 +60,7 @@ def mfshg(fh = None): #fh := FirstHarmonic
                         fh.wl[(n)/2], fh.wl[(n)/2]))**2)\
                   or 0.0
 
-        for j in xrange( (n>=(len(fh.wl)) and\
+        for j in range( (n>=(len(fh.wl)) and\
                          (n - len(fh.wl)+1)) or 0, n/2 + 1):
             p += 4.0 * fh.linI[j] * fh.linI[n-j] \
               * (sinc(crystalLength*dk(sh.wl[n], \

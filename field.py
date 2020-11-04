@@ -2,9 +2,9 @@
 
 from numpy import exp,complex64,pi,arctan2,real,imag,linspace,zeros,diff
 from scipy import optimize
-from scipro import SciPro
-from spectrum import Spectrum
-from oscillogram import Oscillogram
+from .scipro import SciPro
+from .spectrum import Spectrum
+from .oscillogram import Oscillogram
 from numpy.fft import fft,ifft,fftshift,fftfreq
 import pylab as pl
 
@@ -38,7 +38,7 @@ class Field(SciPro):
     def phasemerging( self, gap = 4./3):
         retval = self.copy()
         shift = 0;
-        for i in xrange(1, len(self.y)):
+        for i in range(1, len(self.y)):
             if self.y[i-1] - self.y[i] > gap*pi:
                 shift = shift + 2*pi
             elif self.y[i-1] - self.y[i] < -gap*pi:
@@ -101,11 +101,11 @@ class Field(SciPro):
         #    keywords['xl'] = 'Wavelength, nm'
         #if not keywords.has_key( 'yl'):
         #    keywords['yl'] = 'Intensity, a.u.'
-        if keywords.has_key( 'pform'):
+        if 'pform' in keywords:
             pform = keywords.pop('pform')
         else:
             pform = 'abs'
-        if keywords.has_key( 'pgap'):
+        if 'pgap' in keywords:
             pgap = keywords.pop('pgap')
         else:
             pgap = 4./3
@@ -132,5 +132,5 @@ class Field(SciPro):
         elif pform == 'imag':
             super(Field, self).plot(self.x, imag(self.y), *arguments, **keywords)
         else:
-            print 'Unknown type '+type+', use \"abs\",\"real\" or \"imag\"'
+            print('Unknown type '+type+', use \"abs\",\"real\" or \"imag\"')
 

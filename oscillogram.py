@@ -2,8 +2,8 @@
 
 from numpy import double, where, int32, append, array, zeros
 from numpy.fft import fft,fftshift, fftfreq
-from scipro import SciPro
-from spectrum import Spectrum
+from .scipro import SciPro
+from .spectrum import Spectrum
 
 class Oscillogram(SciPro):
 	'''Oscillogram data'''

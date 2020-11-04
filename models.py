@@ -28,16 +28,16 @@ class RFL:
         #self.deltaNL=self.deltaNLpow
 
     def __str__(self):
-        print 'Stokes wavelength [nm]:\tls = '+str(self.ls)
-        print 'Pump wavelength [nm]:\tlp = '+str(self.lp)
-        print 'Stokes optical losses [dB/km]:\talphas = '+str(self.alphas*(10*log10(exp(1))))
-        print 'YDFL optical losses [dB/km]:\talphap = '+str(self.alphap*(10*log10(exp(1))))
-        print 'Raman gain const [(km*W)^(-1)]:\tgR = '+str(self.gR)
-        print 'Length of fiber [km]:\tLen = '+str(self.Len)
-        print 'kerr coeficient:\tgamma = '+str(self.gam)
-        print 'FBGs parameter:\tdelta0 = '+str(self.delta0)
-        print 'FBGs parameter:\tdelta1 = '+str(self.delta1)
-        print 'FBGs parameter:\tdelta2 = '+str(self.delta2)
+        print('Stokes wavelength [nm]:\tls = '+str(self.ls))
+        print('Pump wavelength [nm]:\tlp = '+str(self.lp))
+        print('Stokes optical losses [dB/km]:\talphas = '+str(self.alphas*(10*log10(exp(1)))))
+        print('YDFL optical losses [dB/km]:\talphap = '+str(self.alphap*(10*log10(exp(1)))))
+        print('Raman gain const [(km*W)^(-1)]:\tgR = '+str(self.gR))
+        print('Length of fiber [km]:\tLen = '+str(self.Len))
+        print('kerr coeficient:\tgamma = '+str(self.gam))
+        print('FBGs parameter:\tdelta0 = '+str(self.delta0))
+        print('FBGs parameter:\tdelta1 = '+str(self.delta1))
+        print('FBGs parameter:\tdelta2 = '+str(self.delta2))
 
     def delta(self, wl):
         return (self.delta0+self.delta2*(wl-self.delta1)**2)

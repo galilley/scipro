@@ -3,7 +3,7 @@
 from pylab import plot,grid,show,xlabel,ylabel,clf
 from numpy import alltrue, array, log10, linspace, ndarray, where, append, arange, insert, delete, searchsorted, int32, double, ones, zeros, zeros_like, concatenate, s_, std, arctan2, imag, real, pi, equal
 from scipy import integrate, optimize, interp
-from constants import *
+from .constants import *
 from numpy.fft import *
 import inspect
 
@@ -210,7 +210,7 @@ class SciPro(object):
 		return self
 
 	def __getitem__(self, a): #TODO
-		print a
+		print(a)
 		raise AttributeError
 
 	def value(self, x):
@@ -225,7 +225,7 @@ class SciPro(object):
 	def phasemerging( self, gap = 4./3):
 		retval = self.copy()
 		shift = 0;
-		for i in xrange(1, len(self.y)):
+		for i in range(1, len(self.y)):
 			if self.y[i-1] - self.y[i] > gap*pi:
 				shift = shift + 2*pi
 			elif self.y[i-1] - self.y[i] < -gap*pi:
@@ -497,7 +497,7 @@ class SciPro(object):
 	def autoCorrelationField(self):
 		'''int(E(t)*E*(t-tau),dt)'''
 		d = arange(self.x.size*2-1, dtype = double)
-		for i in xrange(1,self.x.size+1):
+		for i in range(1,self.x.size+1):
 			d[i-1] = d[d.size-i] = integrate.trapz( self.y[-i:]*self.y[:i].conj(), self.x[:i])
 		dx = abs(self.x[1]-self.x[0])
 		x = linspace( -dx*self.x.size, dx*self.x.size, self.x.size*2-1)
@@ -507,7 +507,7 @@ class SciPro(object):
 		'''int(|E(t)+E(t-tau)|**2,dt)'''
 		d = arange(self.x.size*2-1, dtype = double)
 		dx = abs(self.x[1]-self.x[0])
-		for i in xrange(1,self.x.size+1):
+		for i in range(1,self.x.size+1):
 			valarr = concatenate(( self.y[:-i], self.y[-i:]+self.y[:i], self.y[i:]))
 			d[i-1] = d[d.size-i] = integrate.trapz( valarr*valarr.conj(), dx=dx)
 		x = linspace( -dx*self.x.size, dx*self.x.size, self.x.size*2-1)
@@ -516,7 +516,7 @@ class SciPro(object):
 	def autoCorrelationIntensity(self):
 		'''int(I(t)*I(t-tau),dt)'''
 		d = arange(self.x.size*2-1, dtype = double)
-		for i in xrange(1,self.x.size+1):
+		for i in range(1,self.x.size+1):
 			d[i-1] = d[d.size-i] = integrate.trapz( self.y[-i:]*self.y[:i], self.x[:i])
 		dx = abs(self.x[1]-self.x[0])
 		x = linspace( -dx*self.x.size, dx*self.x.size, self.x.size*2-1)
@@ -526,7 +526,7 @@ class SciPro(object):
 		'''int(|(E(t)+E(t-tau))**2|**2,dt)'''
 		d = arange(self.x.size*2-1, dtype = double)
 		dx = abs(self.x[1]-self.x[0])
-		for i in xrange(1,self.x.size+1):
+		for i in range(1,self.x.size+1):
 			valarr = concatenate(( self.y[:-i]**2, (self.y[-i:]+self.y[:i])**2, self.y[i:]**2))
 			d[i-1] = d[d.size-i] = integrate.trapz( valarr*valarr.conj(), dx=dx)
 		x = linspace( -dx*self.x.size, dx*self.x.size, self.x.size*2-1)
@@ -538,7 +538,7 @@ class SciPro(object):
 		tm = max( max( abs(self.x)), max( abs(val.x)))
 		d = arange( int(round(tm/dx))*2+1, dtype = double)
 		t = linspace( -tm, tm, d.size)
-		for i in xrange(d.size):
+		for i in range(d.size):
 			d[i] = integrate.trapz( interp(t, self.x, self.y, 0.0, 0.0)*interp(t+t[-(i+1)],val.x, val.y, 0.0, 0.0), t)
 		return SciPro(t, d)
 	
@@ -560,7 +560,7 @@ class SciPro(object):
 		if num <= 1:
 			return self
 		smy = arange(self.x.size, dtype=double)
-		for ind in xrange(self.x.size):
+		for ind in range(self.x.size):
 			if ind < int32(num/2):
 				sum = sum+self.y[ind]
 			elif ind < num:
@@ -569,7 +569,7 @@ class SciPro(object):
 			else:
 				sum = sum+self.y[ind]-self.y[ind-num]
 				smy[ind-int32(num/2)] = sum/num
-		for ind in xrange(int32(num/2)):
+		for ind in range(int32(num/2)):
 			sum = sum-self.y[self.x.size-num+ind]
 			smy[self.x.size-int32(num/2)+ind] = sum/(num-1-ind)
 		retval = self.copy()
@@ -584,7 +584,7 @@ class SciPro(object):
 		if num <= 1:
 			return self
 		mvy = arange(self.x.size, dtype=double)
-		for ind in xrange(self.x.size):
+		for ind in range(self.x.size):
 			if ind < int32(num/2):
 				mvy[ind] = std(self.y[:ind+int32(num/2)])
 			elif ind < self.x.size - int32(num/2):
@@ -631,7 +631,7 @@ class SciPro(object):
 		return retlist
 	
 	def split_filled( self, *arguments, **keywords):
-		if keywords.has_key( 'lev'):
+		if 'lev' in keywords:
 			lev = keywords.pop( 'lev')
 		else:
 			lev = 1e-15
@@ -682,16 +682,16 @@ class SciPro(object):
 		
 	def plot(self, *arguments, **keywords):
 		'''fuction to plot self spectr\nplot(type = 'lin', xl = 'xlabel, a.u.', yl = 'ylabel, a.u.')'''
-		if keywords.has_key( 'xl'):
+		if 'xl' in keywords:
 			xlabel( keywords.pop( 'xl'))
 		else:
 			xlabel( 'xlabel, a.u.')
-		if keywords.has_key( 'yl'):
+		if 'yl' in keywords:
 			ylabel( keywords.pop( 'yl'))
 		else:
 			ylabel( 'ylabel, a.u.')
 		grid('on')
-		if keywords.has_key( 'ptype'):
+		if 'ptype' in keywords:
 			ptype = keywords.pop( 'ptype')
 		else:
 			ptype = 'lin'
@@ -706,7 +706,7 @@ class SciPro(object):
 			else:
 				plot(self.x, self.y, *arguments, **keywords)
 		else:
-				print 'Unknown type '+type+', use \"lin\" or \"log\"'
+				print('Unknown type '+type+', use \"lin\" or \"log\"')
 				return False
 		return True
 
@@ -718,7 +718,7 @@ class SciPro(object):
 
 	def save(self, filename = None):
 		if filename is None:
-			print 'Can\'t save: undefined filename'
+			print('Can\'t save: undefined filename')
 			return False
 		d = array([self.x, self.y]).T
 		d.tofile( filename+".bin", dtype=double)
@@ -726,7 +726,7 @@ class SciPro(object):
 
 	def open(self, filename = None):
 		if filename is None:
-				print 'Can\'t save: undefined filename'
+				print('Can\'t save: undefined filename')
 				return False
 		d = fromfile( filename + ".bin").reshape(-1,2).T
 		self.x = d[0]

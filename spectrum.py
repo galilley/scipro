@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from scipro import SciPro
+from .scipro import SciPro
 from numpy import arange, array, append, int32, double, linspace, select, diff,interp,where,zeros,log10
 from scipy import integrate
 from numpy.fft import *
-from constants import *
+from .constants import *
 #from oscillogram import Oscillogram
 
 class Oscillogram(SciPro):
@@ -128,18 +128,18 @@ class Spectrum(SciPro):
 
 	def plot(self, *arguments, **keywords):
 		'''fuction to plot self spectr\nplot(ptype = 'lin', xl = 'Wavelength, nm', yl = 'Intensity, a.u.')'''
-		if not keywords.has_key( 'xl'):
+		if 'xl' not in keywords:
 			keywords['xl'] = 'Wavelength, nm'
-		if not keywords.has_key( 'yl'):
+		if 'yl' not in keywords:
 			keywords['yl'] = 'Intensity, a.u.'
-		if not keywords.has_key( 'ptype'):
+		if 'ptype' not in keywords:
 			keywords['ptype'] = 'lin'
 		if self.xtype is 'wl':
-			if not keywords.has_key( 'xl'):
+			if 'xl' not in keywords:
 				keywords['xl'] = 'Wavelength, nm'
 			SciPro.plot(self, *arguments, **keywords)
 		else:
-			if not keywords.has_key( 'xl'):
+			if 'xl' not in keywords:
 				keywords['xl'] = 'Frequency, THz'
 			SciPro.plot(self, *arguments, **keywords)
 

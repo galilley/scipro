@@ -2,8 +2,8 @@
 
 import copy
 from numpy import double, ndarray, searchsorted, delete, s_, mean
-from scipro import SciPro
-from acf import ACF
+from .scipro import SciPro
+from .acf import ACF
 #from constants import *
 
 class Oscillogram(SciPro):
@@ -87,9 +87,9 @@ class FROGTrace(SciPro):
         '''fuction to plot self spectr\nplot(ptype = 'lin', xl = 'Wavelength, nm', yl = 'Intensity, a.u.')'''
         from matplotlib import cm
         from pylab import colorbar, pcolormesh, xlabel, ylabel
-        if not keywords.has_key( 'xl'):
+        if 'xl' not in keywords:
             keywords['xl'] = 'Time, ps'
-        if not keywords.has_key( 'yl'):
+        if 'yl' not in keywords:
             keywords['yl'] = 'Wavelength, nm'
         surf = pcolormesh(self.x[0], self.x[1], self.y, cmap=cm.rainbow) #cm.nipy_spectral
         colorbar(surf)

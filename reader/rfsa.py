@@ -14,10 +14,10 @@ def fread(filename):
 		if fstr.startswith('Y Axis Units'):
 			if fstr.strip().split(',')[1].startswith('dBm'):
 				ytype = 'log'
-				print 'log'
+				print('log')
 			else:
 				ytype = 'lin'
-				print 'lin'
+				print('lin')
 		fstr = fp.readline()
 			
 	datax = []

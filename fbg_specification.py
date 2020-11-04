@@ -28,7 +28,7 @@ sys.float_output_precision = 4
 os.chdir(FBGpath)
 sys.path.append(syspath)
 
-from optics import spectr
+from .optics import spectr
 import osa
 
 curdir = '.'
@@ -52,16 +52,16 @@ fnfbgr = fnfbgr[nstart:nstop]
 fnfbgt = fnfbgt[nstart:nstop]
 
 #чтение спектров
-for i in xrange(len(fnfbgr)):
+for i in range(len(fnfbgr)):
     spfbgr.append(spectrum(osa.fread(fnfbgr[i])))
-for i in xrange(len(fnfbgt)):
+for i in range(len(fnfbgt)):
     spfbgt.append(spectrum(osa.fread(fnfbgt[i])))
 
 
 fresult = open(fnresult, 'w')
 fresult.write('SN\tdwl-1\tdwl-3\tdwl-10\tcwl\tT[dB]\tR[%]\n')
 
-for i in xrange(len(fnfbgr)):
+for i in range(len(fnfbgr)):
     fresult.write(\
     fnfbgr[i].split('_')[1]+'\t'+\
     repr(spfbgr[i].bandwidth(-1).round(decimals=3))+'\t'+\
@@ -101,14 +101,14 @@ if isplotvar:
     
     gp.xlabel('Wavelength [nm]')
     gp.ylabel('Reflected Power [dBm]')
-    for i in xrange(len(fnfbgr)):
+    for i in range(len(fnfbgr)):
         sn = fnfbgr[i].split('_')[1]
         gp.title(sn+' reflect')
         gp('set output '+'\''+imgdir+'/'+'GDF1060_'+sn+'_r'+ftype+'\'')
         gp.plot(Gnuplot.Data(spfbgr[i].wl, spfbgr[i].logI, with_='p pt 7'))
 
     gp.ylabel('Transmitted Power [dBm]')
-    for i in xrange(len(fnfbgr)):
+    for i in range(len(fnfbgr)):
         sn = fnfbgt[i].split('_')[1]
         gp.title(sn+' transmit')
         gp('set output '+'\''+imgdir+'/'+'GDF1060_'+sn+'_t'+ftype+'\'')

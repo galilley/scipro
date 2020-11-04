@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from scipro import SciPro
+from .scipro import SciPro
 from numpy import arange, array, append, int32, double, linspace, select, diff
 from numpy.fft import *
 from pylab import find
@@ -18,16 +18,16 @@ class ACF(SciPro):
 		#subind = insert( subind, 0, 0)
 		#subind = append( subind,indmaxsample.size-1)
 		indmax = array([], dtype=int)
-		for i in xrange( 1, subind.size):
+		for i in range( 1, subind.size):
 			indmax = append( indmax, indmaxsample[(subind[i]+subind[i-1])/2])
 		#find minlen
 		samplen = indmax[-1]
-		for i in xrange(1,indmax.size):
+		for i in range(1,indmax.size):
 			if indmax[i]-indmax[i-1] < samplen:
 				samplen = indmax[i] - indmax[i-1]
 		#extract samples
 		sa = []
-		for i in xrange(1,indmax.size, 2):
+		for i in range(1,indmax.size, 2):
 			sa.append( ACF(self.x[indmax[i]-samplen-1:indmax[i]], 
 				self.y[indmax[i]-samplen-1:indmax[i]]))
 			sa.append( ACF(self.x.take(int32(linspace(indmax[i]+samplen,indmax[i],samplen+1))),
@@ -55,11 +55,11 @@ class ACF(SciPro):
 		return ACF(self.x, abs(ifft(ffbuf))**2)
 	
 	def plot(self, *arguments, **keywords):
-		if not keywords.has_key( 'xl'):
+		if 'xl' not in keywords:
 			keywords['xl'] = 'Time, a.u.'
-		if not keywords.has_key( 'yl'):
+		if 'yl' not in keywords:
 			keywords['yl'] = 'Intensity, a.u.'
-		if not keywords.has_key( 'ptype'):
+		if 'ptype' not in keywords:
 			keywords['ptype'] = 'lin'
 		SciPro.plot( self, *arguments, **keywords)
 
