@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from .scipro import SciPro
-from numpy import arange, array, append, int32, double, linspace, select, diff
+from numpy import arange, array, append, int32, double, linspace, select, diff, nonzero
 from numpy.fft import *
-from pylab import find
 
 class ACF(SciPro):
 	'''AutoCorrelation Func'''
@@ -12,9 +11,9 @@ class ACF(SciPro):
 
 	def split(self):
 		'''split series'''
-		indmaxsample = find( select( [self.x > (max(self.x)*0.9+min(self.x)*0.1), self.x < (max(self.x)*0.1+min(self.x)*0.9)], [1, 1]) > 0)
+		indmaxsample = nonzero( select( [self.x > (max(self.x)*0.9+min(self.x)*0.1), self.x < (max(self.x)*0.1+min(self.x)*0.9)], [1, 1]) > 0)
 		dind = diff( indmaxsample)
-		subind = find( dind > max(dind)/2.)
+		subind = nonzero( dind > max(dind)/2.)
 		#subind = insert( subind, 0, 0)
 		#subind = append( subind,indmaxsample.size-1)
 		indmax = array([], dtype=int)
