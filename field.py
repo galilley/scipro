@@ -1,28 +1,35 @@
 # -*- coding: utf-8 -*-
 
-from numpy import exp,complex64,pi,arctan2,real,imag,linspace,zeros,diff
-from scipy import optimize
+from numpy import abs,exp,complex64,pi,arctan2,real,imag,linspace,zeros,diff,trapz,sqrt
+from scipy import optimize, integrate
+from scipy.fftpack import fft,ifft,fftshift,fftfreq
 from .scipro import SciPro
 from .spectrum import Spectrum
 from .oscillogram import Oscillogram
-from numpy.fft import fft,ifft,fftshift,fftfreq
 import pylab as pl
 
 class Field(SciPro):
-    '''Field (complex) data, 
+    '''
+    Field (complex) data, 
     yform could be:
         complex [yr] (default)
         alg [yr+j*yi], 
-        exp [yr*exp(j*yi)]'''
-    def __init__(self, x = None, yr = None, yi = None, yform = None):
+        exp [yr*exp(j*yi)]
+    param string d: Domain, time or freq
+    '''
+    def __init__(self, x = None, yr = None, yi = None, yform = None, d='time', cf=0.0):
+        self.domain = d
+        self.central_freq = cf
         if yr is None and yi is None:
             yi = x[2]
             yr = x[1]
             x = x[0]
             if yform is None:
                 yform = 'alg'
+
         if yform is None:
             yform = 'complex'
+
         if yform is 'complex':
             SciPro.__init__(self, x, yr, ytype = 'lin', xtype = 'lin', dtype=complex64)
         elif yform is 'alg':
@@ -33,7 +40,7 @@ class Field(SciPro):
             print('unknown yform')
 	
     def copy(self):
-        return Field( self.x.copy(), self.y.copy())
+        return Field( self.x.copy(), self.y.copy(), d=self.domain, cf=self.central_freq)
 	
     def phasemerging( self, gap = 4./3):
         retval = self.copy()
@@ -77,22 +84,60 @@ class Field(SciPro):
         p = optimize.leastsq( 
                 func, p0, args=(ffpartph.x, ffpartph.y))
         return p[0][2]
-    
-    def fft(self):
-        '''Fast Fourier transform'''
+
+    def power(self):
+        '''return the power value of the data'''
+        return integrate.trapz(real(self.y * self.y.conjugate()), self.x)
+	
+    def normpower(self,pwr=1.):
+        '''normalize power of data to pwr'''
+        k = pwr/self.power()
         retval = self.copy()
-        dt = abs(self.x[-1]-self.x[0])/(len(self.x)-1)
-        retval.x = fftshift( fftfreq(self.x.size, dt))
-        retval.y = fftshift( fft( self.y))
+        retval.y = self.y * sqrt(k)
         return retval
     
-    def ifft(self):
-        '''inverse Fast Fourier transform'''
-        retval = self.copy()
-        fmin = abs(self.x[-1]-self.x[0])/(len(self.x)-1)
-        retval.x = linspace(-0.5/fmin, 0.5/fmin, self.x.size)
-        retval.y = ifft( fftshift(self.y))
+    def fft(self, asis=False):
+        '''
+        Fast Fourier transform
+        param bool asis: do not perform normalization (True) or keep total energy (False)
+        '''
+        if self.domain == 'time':
+            retval = self.copy()
+            retval.domain = 'freq'
+            dt = abs(self.x[-1]-self.x[0])/(len(self.x)-1)
+            retval.x = fftshift( fftfreq(self.x.size, dt) + self.central_freq)
+            retval.y = fftshift( fft( self.y))
+            if not asis:
+                ten = self.power()
+                retval = retval.normpower(ten)
+        else:
+            raise Exception("fft can not be applied to a frequency domain")
         return retval
+    
+    def ifft(self, asis=False):
+        '''
+        inverse Fast Fourier transform
+        param bool asis: do not perform normalization (True) or keep total energy (False)
+        '''
+        if self.domain == 'freq':
+            retval = self.copy()
+            retval.domain = 'time'
+            fmin = abs(self.x[-1]-self.x[0])/(len(self.x)-1)
+            retval.x = linspace(-0.5/fmin, 0.5/fmin, self.x.size, False)
+            retval.y = ifft( fftshift(self.y))
+            if not asis:
+                ten = self.power()
+                retval = retval.normpower(ten)
+        else:
+            raise Exception("ifft can not be applied to a time domain")
+        return retval
+
+    def abs2(self, p = 2):
+        rvy = real(self.y * self.y.conjugate())
+        if self.domain == 'time':
+            return Oscillogram(self.x, rvy)
+        else:
+            return Spectrum(self.x, rvy, xtype='freq')
 
     def plot(self, *arguments, **keywords):
         '''fuction to plot self spectr\nplot(ptype = 'lin', xl = 'Wavelength, nm', yl = 'Intensity, a.u.')'''
