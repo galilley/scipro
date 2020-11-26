@@ -171,6 +171,10 @@ class Field(SciPro):
             ax2.plot( self.x, self.phase().phasemerging(pgap).y, *arguments, **keywords)
             ax1.set_ylabel('Intensity, |A|**2')
             ax2.set_ylabel('Phase, rad')
+            if self.domain == 'time':
+                ax1.set_xlabel('Time, ps')
+            else:
+                ax1.set_xlabel('Frequency, THz')
             pl.sca(ax1)
         elif pform == 'real':
             super(Field, self).plot(self.x, real(self.y), *arguments, **keywords)

@@ -290,8 +290,8 @@ class SciPro(object):
 		else:
 			cutlev = 0.0
 		inds = where(self.y > cutlev)[0]
-		s =	interp([cutlev], self.y[inds[0]-1:inds[0]], self.x[inds[0]-1:inds[0]])
-		e =	interp([cutlev], self.y[inds[-1]:inds[-1]+1], self.x[inds[-1]:inds[-1]+1])
+		s =	interp([cutlev], self.y[inds[0]-1:inds[0]], self.x[inds[0]-1:inds[0]])[0]
+		e =	interp([cutlev], self.y[inds[-1]:inds[-1]+1], self.x[inds[-1]:inds[-1]+1])[0]
 		return e-s
 	
 	def bandwidthleft(self, lev = -3.):
