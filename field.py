@@ -30,11 +30,11 @@ class Field(SciPro):
         if yform is None:
             yform = 'complex'
 
-        if yform is 'complex':
+        if yform == 'complex':
             SciPro.__init__(self, x, yr, ytype = 'lin', xtype = 'lin', dtype=complex64)
-        elif yform is 'alg':
+        elif yform == 'alg':
             SciPro.__init__(self, x, yr + 1j*yi, ytype = 'lin', xtype = 'lin', dtype=complex64)
-        elif yform is 'exp':
+        elif yform == 'exp':
             SciPro.__init__(self, x, yr*exp(1j*yr), ytype = 'lin', xtype = 'lin', dtype=complex64)
         else:
             print('unknown yform')
@@ -164,7 +164,7 @@ class Field(SciPro):
         else:
             ax2 = pl.twinx()
         
-        if pform is 'abs':
+        if pform == 'abs':
             ax1.plot( self.x, self.abspower().y, *arguments, **keywords)
             ax1.plot( self.x[0], self.abspower().y[0], *arguments, **keywords)
             ax2.plot( self.x[0], self.phase().y[0], *arguments, **keywords)

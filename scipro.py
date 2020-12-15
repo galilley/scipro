@@ -34,11 +34,11 @@ class SciPro(object):
 	
 	def __add__(self, var):
 		if type(var) is type(self):
-			if self.ytype is 'log':
+			if self.ytype == 'log':
 				a = self.convytype( 'lin')
 			else:
 				a = self
-			if var.ytype is 'log':
+			if var.ytype == 'log':
 				b = var.convytype( 'lin')
 			else:
 				b = var
@@ -47,7 +47,7 @@ class SciPro(object):
 			else:
 				y = a.y+interp(a.x, b.x, b.y, left=0., right=0.)
 		elif type(var) is int or float:
-			if self.ytype is 'log':
+			if self.ytype == 'log':
 				a = self.convytype( 'lin')
 			else:
 				a = self
@@ -63,9 +63,9 @@ class SciPro(object):
 
 	def __iadd__(self, var):
 		if type(var) is type(self):
-			if self.ytype is 'log':
+			if self.ytype == 'log':
 				self.setytype( 'lin')
-			if var.ytype is 'log':
+			if var.ytype == 'log':
 				b = var.convytype( 'lin')
 			else:
 				b = var
@@ -74,7 +74,7 @@ class SciPro(object):
 			else:
 				self.y += interp(self.x, b.x, b.y, left=0., right=0.)
 		elif type(var) is int or float:
-			if self.ytype is 'log':
+			if self.ytype == 'log':
 				self.setytype( 'lin')
 			self.y+=var
 		else:
@@ -83,11 +83,11 @@ class SciPro(object):
 	
 	def __sub__(self, var):
 		if type(var) is type(self):
-			if self.ytype is 'log':
+			if self.ytype == 'log':
 				a = self.convytype( 'lin')
 			else:
 				a = self
-			if var.ytype is 'log':
+			if var.ytype == 'log':
 				b = var.convytype( 'lin')
 			else:
 				b = var
@@ -96,7 +96,7 @@ class SciPro(object):
 			else:
 				y = a.y-interp(a.x, b.x, b.y, left=0., right=0.)
 		elif type(var) is int or float:
-			if self.ytype is 'log':
+			if self.ytype == 'log':
 				a = self.convytype( 'lin')
 			else:
 				a = self
@@ -112,9 +112,9 @@ class SciPro(object):
 	
 	def __isub__(self, var):
 		if type(var) is type(self):
-			if self.ytype is 'log':
+			if self.ytype == 'log':
 				self.setytype( 'lin')
-			if var.ytype is 'log':
+			if var.ytype == 'log':
 				b = var.convytype( 'lin')
 			else:
 				b = var
@@ -123,7 +123,7 @@ class SciPro(object):
 			else:
 				self.y -= interp(self.x, b.x, b.y, left=0., right=0.)
 		elif type(var) is int or float:
-			if self.ytype is 'log':
+			if self.ytype == 'log':
 				self.setytype( 'lin')
 			self.y-=var
 		else:
@@ -131,7 +131,7 @@ class SciPro(object):
 		return self
 	
 	def __neg__(self):
-		if self.ytype is 'log':
+		if self.ytype == 'log':
 			a = self.convytype( 'lin')
 		else:
 			a = self
@@ -141,7 +141,7 @@ class SciPro(object):
 
 	def __mul__(self, var):
 		if type(var) is type(self):
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				if equal(self.x, var.x).prod():
 					y = self.y*var.y
 				else:
@@ -152,7 +152,7 @@ class SciPro(object):
 				else:
 					y = self.y+interp(self.x, var.x, var.y, left=0., right=0.)
 		elif type(var) is int or float:
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				y = self.y*var
 			else:
 				y = self.y+10*log10(var)
@@ -164,12 +164,12 @@ class SciPro(object):
 	
 	def __imul__(self, var):
 		if type(var) is type(self):
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				self.y*=interp(self.x, var.x, var.y, left=0., right=0.)
 			else:
 				self.y+=interp(self.x, var.x, var.y, left=0., right=0.)
 		elif type(var) is int or float:
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				self.y*=var
 			else:
 				self.y+=10*log10(var)
@@ -179,12 +179,12 @@ class SciPro(object):
 	
 	def __div__(self, var):
 		if type(var) is type(self):
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				y = self.y/interp(self.x, var.x, var.y, left=0., right=0.)
 			else:
 				y = self.y-interp(self.x, var.x, var.y, left=0., right=0.)
 		elif type(var) is int or float:
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				y = self.y/var
 			else:
 				y = self.y-10*log10(var)
@@ -196,12 +196,12 @@ class SciPro(object):
 	
 	def __idiv__(self ,var):
 		if type(var) is type(self):
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				self.linI/=interp(self.x, var.x, var.y, left=0., right=0.)
 			else:
 				self.logI-=interp(self.x, var.x, var.y, left=0., right=0.)
 		elif type(var) is int or float:
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				self.y/=var
 			else:
 				self.y-=10*log10(var)
@@ -242,7 +242,7 @@ class SciPro(object):
 		return SciPro( self.x.copy(), self.y.copy(), ytype=self.ytype, xtype=self.xtype, dtype=self.dtype)
 
 	def tolog( self):
-		if self.ytype is 'log':
+		if self.ytype == 'log':
 			return self
 		y = 10*log10(self.y)
 		retval = self.copy()
@@ -251,7 +251,7 @@ class SciPro(object):
 		return retval
 
 	def tolin( self):
-		if self.ytype is 'lin':
+		if self.ytype == 'lin':
 			return self
 		y = 10.**(self.y/10.)
 		retval = self.copy()
@@ -278,12 +278,12 @@ class SciPro(object):
 	def bandwidth(self, lev = -3.):
 		'''return bandwidth at specified level'''
 		if lev > 0.:
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				cutlev = max(self.y)*lev
 			else:
 				cutlev = max(self.y)+10.*log10(lev)
 		elif lev < 0.:
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				cutlev = max(self.y)*(10.**(lev/10.))
 			else:
 				cutlev = max(self.y)+lev
@@ -297,12 +297,12 @@ class SciPro(object):
 	def bandwidthleft(self, lev = -3.):
 		'''return bandwidth at specified level'''
 		if lev > 0.:
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				tmp = self.x[where(self.y>=max(self.y)*lev)]
 			else:
 				tmp = self.x[where(self.y>=max(self.y)+10.*log10(lev))]
 		elif lev < 0.:
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				tmp = self.x[where(self.y>=max(self.y)*(10.**(lev/10.)))]
 			else:
 				tmp = self.x[where(self.y>=max(self.y)+lev)]
@@ -313,12 +313,12 @@ class SciPro(object):
 	def bandwidthright(self, lev = -3.):
 		'''return bandwidth at specified level'''
 		if lev > 0.:
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				tmp = self.x[where(self.y>=max(self.y)*lev)]
 			else:
 				tmp = self.x[where(self.y>=max(self.y)+10.*log10(lev))]
 		elif lev < 0.:
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				tmp = self.x[where(self.y>=max(self.y)*(10.**(lev/10.)))]
 			else:
 				tmp = self.x[where(self.y>=max(self.y)+lev)]
@@ -345,7 +345,7 @@ class SciPro(object):
 	def setytype( self, ytype):
 		if ytype is self.ytype:
 			return self
-		elif ytype is 'lin':
+		elif ytype == 'lin':
 			self.y = 10.**(self.y/10.)
 			self.ytype = 'lin'
 		else:
@@ -356,7 +356,7 @@ class SciPro(object):
 	def convytype( self, ytype):
 		if ytype is self.ytype:
 			return self.copy()
-		elif ytype is 'lin':
+		elif ytype == 'lin':
 			y = 10.**(self.y/10.)
 			ytype = 'lin'
 		else:
@@ -386,7 +386,7 @@ class SciPro(object):
 	
 	def xMean(self):
 		'''return x with intensity in center by fwhm'''
-		if self.ytype is 'lin':
+		if self.ytype == 'lin':
 			tmp = self.wl[where(self.y>=max(self.y)/2.)]
 		else:
 			tmp = self.wl[where(self.y>=max(self.y)-3.)]
@@ -406,7 +406,7 @@ class SciPro(object):
 	
 	def power(self):
 		'''return power of all data'''
-		if self.ytype is 'lin':
+		if self.ytype == 'lin':
 			return integrate.trapz(self.y, self.x)
 		else:
 			return integrate.trapz(10.**(self.y/10.), self.x)
@@ -424,7 +424,7 @@ class SciPro(object):
 		'''normalize data to 1'''
 		retval = self.copy()
 		retval.y = self.y - self.y.min()
-		if self.ytype is 'lin':
+		if self.ytype == 'lin':
 			retval.y = self.y/self.y.max()
 		else:
 			retval.y=self.y - self.y.max()
@@ -434,7 +434,7 @@ class SciPro(object):
 		'''normalize power of data to x'''
 		k = pwr/self.power()
 		retval = self.copy()
-		if self.ytype is 'lin':
+		if self.ytype == 'lin':
 			retval.y = self.y * k
 		else:
 			retval.y = self.y + 10.*log10(k)
@@ -443,7 +443,7 @@ class SciPro(object):
 	def multconst(self,k):
 		'''multiply data to constant k'''
 		retval = self.copy()
-		if self.ytype is 'lin':
+		if self.ytype == 'lin':
 			retval.y = self.y * k
 		else:
 			retval.y = self.y + 10.*log10(k)
@@ -451,7 +451,7 @@ class SciPro(object):
 
 	def x2Mean(self):
 		x0 = self.xMean()
-		if self.ytype is 'lin':
+		if self.ytype == 'lin':
 			return integrate.trapz(self.y*(self.x-x0)**2, self.x)/integrate.trapz(self.y, self.x)
 		else:
 			return integrate.trapz(10.**(self.y/10.)*(self.x-x0)**2, self.x)/integrate.trapz(10.**(self.y/10.), self.x)
@@ -464,7 +464,7 @@ class SciPro(object):
 	
 	def fft(self, fakerange = 1.):
 		'''direct Fourier transform'''
-		if self.ytype is 'lin':
+		if self.ytype == 'lin':
 			inds =  where( abs(self.y) >= (max(abs(self.y))/2.))[0]
 		else:
 			inds =  where( abs(self.y) >= (max(abs(self.y))-3))[0]
@@ -480,7 +480,7 @@ class SciPro(object):
 	
 	def ifft(self, fakerange = 1.):
 		'''inverse Fourier transform'''
-		if self.ytype is 'lin':
+		if self.ytype == 'lin':
 			inds =  where( abs(self.y) >= (max(abs(self.y))/2.))[0]
 		else:
 			inds =  where( abs(self.y) >= (max(abs(self.y))-3))[0]
@@ -695,13 +695,13 @@ class SciPro(object):
 			ptype = keywords.pop( 'ptype')
 		else:
 			ptype = 'lin'
-		if ptype is 'lin':
-			if self.ytype is 'lin':
+		if ptype == 'lin':
+			if self.ytype == 'lin':
 				plot(self.x, self.y, *arguments, **keywords)
 			else:
 				plot(self.x, 10.**(self.y/10.), *arguments, **keywords)
 		elif ptype == 'log':
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				plot(self.x, 10.*log10(self.y), *arguments, **keywords)
 			else:
 				plot(self.x, self.y, *arguments, **keywords)

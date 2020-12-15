@@ -17,7 +17,7 @@ class Oscillogram(SciPro):
 		osc = self
 		dnum = int32((( fakerange-1)*len(osc.x)))
 		ffdata = array( [], dtype = double)
-		if self.ytype is 'lin':
+		if self.ytype == 'lin':
 			ffdata = append( osc.y, zeros( dnum, dtype = double))
 		else:
 			ffdata = append( 10.**(osc.y/10.), zeros( dnum, dtype = double))

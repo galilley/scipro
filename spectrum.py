@@ -39,7 +39,7 @@ class Spectrum(SciPro):
 
 	def tofreq(self):
 		'''convert self x axis [wl, nm] to [freq, THz]'''
-		if self.xtype is 'wl':
+		if self.xtype == 'wl':
 			x = LIGHT_SPEED/self.x*1e-3
 			x = x[::-1]
 			y = self.y.copy()[::-1]
@@ -50,7 +50,7 @@ class Spectrum(SciPro):
 
 	def towl(self):
 		'''convert self x axis [freq, THz] to [wl, nm]'''
-		if self.xtype is 'freq':
+		if self.xtype == 'freq':
 			x = LIGHT_SPEED/self.x*1e-3
 			x = x[::-1]
 			y = self.y.copy()[::-1]
@@ -66,12 +66,12 @@ class Spectrum(SciPro):
 	def cutnoise(self, lev=-20):
 		'''cutnoise(self, lev=-20)'''
 		if lev > 0.:
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				ind = where(self.y >= max(self.y)*lev)
 			else:
 				ind = where(self.y >= max(self.y)+10.*log10(lev))
 		elif lev < 0.:
-			if self.ytype is 'lin':
+			if self.ytype == 'lin':
 				ind = where(self.y >= max(self.y)*(10.**(lev/10.)))
 			else:
 				ind = where(self.y >= max(self.y)+lev)
@@ -104,18 +104,18 @@ class Spectrum(SciPro):
 
 	def fft(self, fakerange = 1.):
 		'''return time domain in ps'''
-		if self.xtype is 'wl':
+		if self.xtype == 'wl':
 			sp = self.tofreq().reverse().equidistant()
 		else:
 			sp = self
-		if self.ytype is 'lin':
+		if self.ytype == 'lin':
 			inds =  where( sp.y >= (max(sp.y)/2.))[0]
 		else:
 			inds =  where( sp.y >= (max(sp.y)-3))[0]
 		ind0 = int32(( inds[0]+inds[-1])/2)
 		dnum = int32((( fakerange-1)*len(sp.x)))
 		ffdata = array( [], dtype = double)
-		if self.ytype is 'lin':
+		if self.ytype == 'lin':
 			ffdata = append( sp.y[ind0:], zeros( dnum, dtype = double))
 			ffdata = append( ffdata, sp.y[:ind0])
 		else:
@@ -134,7 +134,7 @@ class Spectrum(SciPro):
 			keywords['yl'] = 'Intensity, a.u.'
 		if 'ptype' not in keywords:
 			keywords['ptype'] = 'lin'
-		if self.xtype is 'wl':
+		if self.xtype == 'wl':
 			if 'xl' not in keywords:
 				keywords['xl'] = 'Wavelength, nm'
 			SciPro.plot(self, *arguments, **keywords)
