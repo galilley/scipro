@@ -7,6 +7,8 @@ from .constants import *
 from numpy.fft import *
 import inspect
 
+# TODO: thread safe plot
+
 class SciPro(object):
 	'''this class allow analyze scientific data'''
 	def __init__(self, x = None, y = None, ytype = 'lin', xtype = 'lin', dtype=double):
@@ -290,8 +292,8 @@ class SciPro(object):
 		else:
 			cutlev = 0.0
 		inds = where(self.y > cutlev)[0]
-		s =	interp([cutlev], self.y[inds[0]-1:inds[0]], self.x[inds[0]-1:inds[0]])[0]
-		e =	interp([cutlev], self.y[inds[-1]:inds[-1]+1], self.x[inds[-1]:inds[-1]+1])[0]
+		s =	interp([cutlev], self.y[inds[0]-1:inds[0]+1], self.x[inds[0]-1:inds[0]+1])[0]
+		e =	interp([cutlev], self.y[inds[-1]:inds[-1]+2], self.x[inds[-1]:inds[-1]+2])[0]
 		return e-s
 	
 	def bandwidthleft(self, lev = -3.):
