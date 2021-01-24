@@ -647,10 +647,11 @@ class SciPro(object):
 				#retbuf = self.copy()
 				#ind = searchsorted( retbuf.x, a)
 				inds = where( (self.x >= xstart) & (self.x < a))[0]
+				# TODO избавиться от insert и сделать нормально через where
 				if inds.size != 0:
 					retval.x = self.x.copy()
 					retval.y = zeros(self.x.size-inds.size, dtype=type(ystart))+lev
-					retval.y = insert( retval.y, ones(inds.size)*inds[0], self.y[inds])
+					retval.y = insert( retval.y, ones(inds.size, dtype=int)*inds[0], self.y[inds])
 					retlist.append( retval.copy())
 					#indstart = ind
 					xstart = self.x[inds[-1]]
