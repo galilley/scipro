@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from array import array as ar
 from .. field import Field
-from .. constants import *
+from .. constants import LIGHT_SPEED
+
+def field_convert_back(f):
+    """
+    Convert SciPro field into pyofss's one
+    return: numpy array, time_window, central_frequency
+    """
+    return f.y.conjugate(), f.x[-1]-f.x[0], f.central_freq
 
 def field_convert(d,  tw=None, cf=None):
     """
