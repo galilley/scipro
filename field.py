@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from numpy import abs,exp,complex64,pi,arctan2,real,imag,linspace,zeros,diff,trapz,sqrt
+from numpy import abs,exp,complex64,pi,arctan2,real,imag,linspace,zeros,diff,sqrt
 from scipy import optimize, integrate
 from scipy.fftpack import fft,ifft,fftshift,fftfreq
 from .scipro import SciPro
-from .spectrum import Spectrum
-from .oscillogram import Oscillogram
 import pylab as pl
 
 class Field(SciPro):
@@ -135,8 +133,10 @@ class Field(SciPro):
     def abs2(self, p = 2):
         rvy = real(self.y * self.y.conjugate())
         if self.domain == 'time':
+            from .oscillogram import Oscillogram
             return Oscillogram(self.x, rvy)
         else:
+            from .spectrum import Spectrum
             return Spectrum(self.x, rvy, xtype='freq')
 
     def plot(self, *arguments, **keywords):

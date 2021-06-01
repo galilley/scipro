@@ -3,7 +3,7 @@
 from numpy import double, where, int32, append, array, zeros
 from numpy.fft import fft,fftshift, fftfreq
 from .scipro import SciPro
-from .spectrum import Spectrum
+
 
 class Oscillogram(SciPro):
 	'''Oscillogram data'''
@@ -12,18 +12,19 @@ class Oscillogram(SciPro):
 
 	def copy(self):
 		return Oscillogram( self.x.copy(), self.y.copy(), ytype=self.ytype)
+
 	def fft(self, fakerange = 1.):
 		'''return spectrum domain in THz if the time domain in ps'''
 		osc = self
 		dnum = int32((( fakerange-1)*len(osc.x)))
 		ffdata = array( [], dtype = double)
-		if self.ytype == 'lin':
-			ffdata = append( osc.y, zeros( dnum, dtype = double))
-		else:
-			ffdata = append( 10.**(osc.y/10.), zeros( dnum, dtype = double))
+		if self.ytype != 'lin':
+			osc = osc.tolin()
+		ffdata = append( osc.y, zeros( dnum, dtype = double))
 		ffydata = abs( fftshift( fft( ffdata)))**2
 		dt = abs(osc.x[1]-osc.x[0])
 		ffxdata = fftshift(fftfreq(osc.x.size+dnum, dt))
+		from .spectrum import Spectrum
 		return Spectrum(ffxdata, ffydata, xtype='freq', ytype='lin')
 
 		

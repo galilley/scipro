@@ -5,12 +5,7 @@ from numpy import arange, array, append, int32, double, linspace, select, diff,i
 from scipy import integrate
 from numpy.fft import *
 from .constants import *
-#from oscillogram import Oscillogram
 
-class Oscillogram(SciPro):
-	'''Oscillogram data'''
-	def __init__(self, x = None, y = None, ytype = 'lin'):
-		SciPro.__init__(self, x, y, ytype = ytype, xtype = 'lin', dtype=double)
 
 class Spectrum(SciPro):
 	'''Spectrum data'''
@@ -105,25 +100,21 @@ class Spectrum(SciPro):
 	def fft(self, fakerange = 1.):
 		'''return time domain in ps'''
 		if self.xtype == 'wl':
-			sp = self.tofreq().reverse().equidistant()
+			sp = self.tofreq().equidistant()
 		else:
 			sp = self
-		if self.ytype == 'lin':
-			inds =  where( sp.y >= (max(sp.y)/2.))[0]
-		else:
-			inds =  where( sp.y >= (max(sp.y)-3))[0]
+		if self.ytype != 'lin':
+			sp = sp.tolin()
+		inds =  where( sp.y >= (max(sp.y)/2.))[0]
 		ind0 = int32(( inds[0]+inds[-1])/2)
 		dnum = int32((( fakerange-1)*len(sp.x)))
 		ffdata = array( [], dtype = double)
-		if self.ytype == 'lin':
-			ffdata = append( sp.y[ind0:], zeros( dnum, dtype = double))
-			ffdata = append( ffdata, sp.y[:ind0])
-		else:
-			ffdata = append( 10.**(sp.y[ind0:]/10.), zeros( dnum, dtype = double))
-			ffdata = append( ffdata, 10.**(sp.y[:ind0]/10.))
+		ffdata = append( sp.y[ind0:], zeros( dnum, dtype = double))
+		ffdata = append( ffdata, sp.y[:ind0])
 		ffydata = abs( fftshift( ifft( ffdata**0.5)))**2
 		fmin = abs(sp.x[1]-sp.x[0])
 		ffxdata = linspace(-0.5/fmin, 0.5/fmin, sp.x.size+dnum)
+		from .oscillogram import Oscillogram
 		return Oscillogram(ffxdata, ffydata, ytype='lin')
 
 	def plot(self, *arguments, **keywords):
