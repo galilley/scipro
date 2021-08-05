@@ -33,7 +33,7 @@ class Field(SciPro):
         elif yform == 'alg':
             SciPro.__init__(self, x, yr + 1j*yi, ytype = 'lin', xtype = 'lin', dtype=complex64)
         elif yform == 'exp':
-            SciPro.__init__(self, x, yr*exp(1j*yr), ytype = 'lin', xtype = 'lin', dtype=complex64)
+            SciPro.__init__(self, x, yr*exp(1j*yi), ytype = 'lin', xtype = 'lin', dtype=complex64)
         else:
             print('unknown yform')
 	
@@ -62,14 +62,24 @@ class Field(SciPro):
         return retval
 
     def add_phase(self, ph = [0.]):
+        """
+        :ph: phase as ph_0 + ph_1*(freq-cf) + ph_2*(freq-cf)**2 ... . *Unit: rad*
+        """
         retval = self.copy()
         phase = zeros(self.x.size)
-        for i in range(len(ph)):
-            phase += self.x**i*ph[i]
+        if self.domain == 'time':
+            for i in range(len(ph)):
+                phase += ph[i] * self.x**i
+        else:
+            for i in range(len(ph)):
+                phase += ph[i] * (self.x - self.central_freq)**i
         retval.y *= exp(1j*phase)
         return retval
     
     def add_chirp(self, chirp_val):
+        """
+        :chirp_val: chirp value. *Unit: rad*
+        """
         retval = self.copy()
         retval.y *= exp(1j*retval.x**2*chirp_val)
         return retval
