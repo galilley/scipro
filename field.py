@@ -40,9 +40,8 @@ class Field(SciPro):
     def copy(self):
         return Field( self.x.copy(), self.y.copy(), d=self.domain, cf=self.central_freq)
 	
-    def phasemerging( self, gap = 4./3):
+    def phasemerging( self, gap=4./3, shift=0):
         retval = self.copy()
-        shift = 0;
         for i in range(1, len(self.y)):
             if self.y[i-1] - self.y[i] > gap*pi:
                 shift = shift + 2*pi
@@ -164,6 +163,10 @@ class Field(SciPro):
             pgap = keywords.pop('pgap')
         else:
             pgap = 4./3
+        if 'pshift' in keywords:
+            pshift = keywords.pop('pshift')
+        else:
+            pshift = 0
         
         if len(pl.gcf().axes) > 0:
             ax1 = pl.gcf().axes[0]
@@ -175,10 +178,12 @@ class Field(SciPro):
             ax2 = pl.twinx()
         
         if pform == 'abs':
-            ax1.plot( self.x, self.abspower().y, *arguments, **keywords)
+            # save lines to be able to change it later
+            l1, = ax1.plot( self.x, self.abspower().y, *arguments, **keywords)
             ax1.plot( self.x[0], self.abspower().y[0], *arguments, **keywords)
+            # plot one point to shift colors
             ax2.plot( self.x[0], self.phase().y[0], *arguments, **keywords)
-            ax2.plot( self.x, self.phase().phasemerging(pgap).y, *arguments, **keywords)
+            l2, = ax2.plot( self.x, self.phase().phasemerging(pgap, pshift).y, *arguments, **keywords)
             ax1.set_ylabel('Intensity, |A|**2')
             ax2.set_ylabel('Phase, rad')
             if self.domain == 'time':
@@ -192,4 +197,5 @@ class Field(SciPro):
             super(Field, self).plot(self.x, imag(self.y), *arguments, **keywords)
         else:
             print('Unknown type '+type+', use \"abs\",\"real\" or \"imag\"')
+        return l1, l2
 
