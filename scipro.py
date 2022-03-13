@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from pylab import plot,grid,show,xlabel,ylabel,clf
-from numpy import alltrue, array, log10, linspace, ndarray, where, append, arange, insert, delete, searchsorted, int32, double, ones, zeros, zeros_like, concatenate, s_, std, arctan2, imag, real, pi, equal
+from numpy import alltrue, array, log10, linspace, ndarray, where, append, arange, insert, delete, searchsorted, int32, double, ones, zeros, concatenate, s_, std, arctan2, imag, real, pi, equal, fromfile
 from scipy import integrate, optimize, interp
-from .constants import *
-from numpy.fft import *
-import inspect
+from numpy.fft import fftshift, fft, ifft
 
 # TODO: thread safe plot
 
@@ -33,7 +31,11 @@ class SciPro(object):
 				self.x = x
 				self.y = y
 				self.dtype = type(y)
-	
+		# reverse X-axis automatically
+		if len(self.x) > 1 and self.x[0] > self.x[-1]:
+                    self.x = self.x[::-1]
+                    self.y = self.y[::-1]
+
 	def __add__(self, var):
 		if type(var) is type(self):
 			if self.ytype == 'log':
@@ -195,7 +197,10 @@ class SciPro(object):
 		retval = self.copy()
 		retval.y = y
 		return retval
-	
+        
+	def __truediv__(self, var):
+		return self.__div__(var)
+
 	def __idiv__(self ,var):
 		if type(var) is type(self):
 			if self.ytype == 'lin':
@@ -292,8 +297,8 @@ class SciPro(object):
 		else:
 			cutlev = 0.0
 		inds = where(self.y > cutlev)[0]
-		s =	interp([cutlev], self.y[inds[0]-1:inds[0]+1], self.x[inds[0]-1:inds[0]+1])[0]
-		e =	interp([cutlev], self.y[inds[-1]:inds[-1]+2], self.x[inds[-1]:inds[-1]+2])[0]
+		s = interp([cutlev], self.y[inds[0]-1:inds[0]+1], self.x[inds[0]-1:inds[0]+1])[0]
+		e = interp([cutlev], self.y[inds[-1]:inds[-1]+2], self.x[inds[-1]:inds[-1]+2])[0]
 		return e-s
 	
 	def bandwidthleft(self, lev = -3.):

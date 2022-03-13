@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from numpy import array, append, flipud, log10, double
-from ..spectrum import *
+from numpy import array, log10, double
+from ..spectrum import Spectrum
 
 def fread(filename):
 	'''This function read data from trace'x file of Optical Spectrum Analyzer'''
@@ -37,6 +37,9 @@ def fread(filename):
 	fp.close()
 	datax = array(datax).astype(double)
 	datay = array(datay).astype(double)
+
+	if (datay >= 0.).all():
+		ytype = 'lin'
 
 	if lsunt == 0:
 		if resln != 0.0:

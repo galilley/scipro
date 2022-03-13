@@ -140,7 +140,7 @@ class Field(SciPro):
         return retval
 
     def abs2(self, p = 2):
-        rvy = real(self.y * self.y.conjugate())
+        rvy = real(self.y * self.y.conjugate())**(p/2.)
         if self.domain == 'time':
             from .oscillogram import Oscillogram
             return Oscillogram(self.x, rvy)

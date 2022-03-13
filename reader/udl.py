@@ -4,8 +4,15 @@
 from numpy import array, double
 import gzip
 import bz2
+import sys
 
-delimlist = [b' ', b',', b'\t', b';', None]
+"""
+if sys.version_info[0] == 3:
+    delimlist = [' ', ',', '\t', ';', None]
+else:
+    delimlist = [b' ', b',', b'\t', b';', None]
+"""
+delimlist = [' ', ',', '\t', ';', None]
 
 def fread(filename):
 	'''This function read data from abstract file'''
@@ -58,32 +65,13 @@ def fread(filename):
 	for i in range(colcnt):
 		d.append(array([], dtype = double))
 
-	cnt = 0
-	#if isdeccomma:
-	#	fstr = fstr.replace(',','.')
-	#lstr = fstr.strip().split(delimlist[inddelim])
-	#lstr = rm_empty(lstr)
-	#ds = array([lstr], dtype='|S')
 	filedata = fp.readlines();
-	#filedata.insert(0, fstr)
 
-	'''
-	for fstr in filedata:
-		if fstr.strip() == '': 
-			break
-		if isdeccomma:
-			fstr = fstr.replace(',','.')
-		lstr = fstr.strip().split(delimlist[inddelim])
-		lstr = rm_empty(lstr)
+	# check for leading whitespaces
+	if filedata[0] != filedata[0].lstrip():
+		for i in range(len(filedata)):
+			filedata[i] = filedata[i].lstrip()
 
-		ds = append(ds, array(lstr, dtype='|S'))
-
-		#for i in xrange(len(lstr)):
-		#	d[i] = append( d[i], float(lstr[i]))
-
-		fstr = fp.readline()
-		cnt += 1
-	'''
 	if isdeccomma:
 		filedata = [s.replace(',', '.') for s in filedata]
 
@@ -101,7 +89,11 @@ def fread(filename):
 	while filedata[-1].strip() == '':
 		filedata = filedata[:-1]
 
-	d = filedata.astype(double).reshape(-1, colcnt).T
+	try:
+		d = filedata.astype(double).reshape(-1, colcnt).T
+	except Exception as e:
+		print(filedata[:100])
+		raise e
 
 	return d
 
@@ -154,16 +146,23 @@ def check_delimiter4float( dstr, dlt):
 					return False
 		if cnt == len(sl):
 			return True
-	else:
+	elif len(sl) == 1:
 		try:
 			float(sl[0])
 			return True
 		except ValueError:
 			return False
+	else:
+		return False
 
 def find_delimiter( s):
-	for i in range(len(delimlist)):
-		if check_delimiter4float( s, delimlist[i]):
-			return i
+	try:
+		for i in range(len(delimlist)):
+			if check_delimiter4float( s.strip(), delimlist[i]):
+				return i
+	except Exception as e:
+		print(e)
+		print("arg: \"{}\"".format(repr(s)))
+		raise e
 	return -1
 
