@@ -31,10 +31,10 @@ class SciPro(object):
 				self.x = x
 				self.y = y
 				self.dtype = type(y)
-		# reverse X-axis automatically
-		if len(self.x) > 1 and self.x[0] > self.x[-1]:
-                    self.x = self.x[::-1]
-                    self.y = self.y[::-1]
+		# reverse X-axis automatically in case of one dimensional array
+		if len(self.x.shape) == 1 and len(self.x) > 1 and self.x[0] > self.x[-1]:
+			self.x = self.x[::-1]
+			self.y = self.y[::-1]
 
 	def __add__(self, var):
 		if type(var) is type(self):
