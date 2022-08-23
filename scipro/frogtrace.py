@@ -77,10 +77,13 @@ class FROGTrace(SciPro):
         else:
             return indl
 
-    def noiseAvgSub(self):
-        '''Subtract noise averaged by X scale'''
+    def noiseAvgSub(self, ind=6):
+        '''Subtract noise averaged by X scale.
+            It works well for a whole FROG trace the first spectral pixels of which
+            are masked (see OceanOptics dark pixels description and discussion here:
+            https://github.com/ap--/python-seabreeze/issues/88).'''
         retval = self.copy()
-        retval.y -= mean(self.y[0])
+        retval.y -= mean(self.y[ind])
         return retval
 
     def plot(self, *arguments, **keywords):
