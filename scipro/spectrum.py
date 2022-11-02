@@ -98,7 +98,12 @@ class Spectrum(SciPro):
 		return integrate.trapz(self.tolin().y*(self.x-x0)**2, self.x)/integrate.trapz(self.tolin().y, self.x)
 
 	def fft(self, fakerange = 1.):
-		'''return time domain in ps'''
+		'''
+			return time domain in ps
+			
+			param fakerange: coefficent to extend the range by zeroes
+				to increase resolution of the time domain shape
+        '''
 		if self.xtype == 'wl':
 			sp = self.tofreq().equidistant()
 		else:

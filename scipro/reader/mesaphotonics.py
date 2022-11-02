@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from numpy import array, linspace, meshgrid
+from numpy import array, linspace, meshgrid, isclose
 from array import array as ar
 from ..frogtrace import FROGTrace
 
@@ -21,7 +21,9 @@ def fread(filename):
     d.fromfile( fd, int(v2))
     d.byteswap()
     fd.close()
-    vt = 1e-3*linspace(-0.5*v2/v1*v3*v4, 0.5*v2/v1*v3*v4, v2/v1)
+    if not isclose(v2/v1, int(v2/v1)):
+        print("Warning: the array size is not a multiple of the spectrum size")
+    vt = 1e-3*linspace(-0.5*v2/v1*v3*v4, 0.5*v2/v1*v3*v4, int(v2/v1))
     vz = array(d.tolist())
     vzarr = vz.reshape(-1, int(v2/v1))
     print( "file ", filename)

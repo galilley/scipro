@@ -84,6 +84,9 @@ class Field(SciPro):
         return retval
     
     def chirp(self, pgap = 4./3):
+        """
+        return: chirp value as a result of parabolic phase fitting
+        """
         ffpartph = self.phase().phasemerging(gap = pgap)
         funclinfit = lambda p, x: p[0]+p[1]*x+p[2]*x**2
         func = lambda p, x, y: (funclinfit(p, x)-y)
