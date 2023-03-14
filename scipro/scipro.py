@@ -3,7 +3,7 @@
 from pylab import plot, grid, show, xlabel, ylabel, clf
 from numpy import alltrue, array, log10, linspace, ndarray, where, append, arange, insert, delete, searchsorted, int32, double, ones, zeros, concatenate, s_, std, arctan2, imag, real, pi, equal, fromfile
 from scipy import integrate, optimize, interp, interpolate
-from numpy.fft import fftshift, fft, ifft
+from numpy.fft import fftshift, ifftshift, fft, ifft
 
 # TODO: thread safe plot
 
@@ -254,22 +254,6 @@ class SciPro(object):
         retval = self.copy()
         retval.y = abs(retval.y)**p
         return retval
-
-    def phasemerging(self, gap=4./3):
-        retval = self.copy()
-        shift = 0
-        for i in range(1, len(self.y)):
-            if self.y[i-1] - self.y[i] > gap*pi:
-                shift = shift + 2*pi
-            elif self.y[i-1] - self.y[i] < -gap*pi:
-                shift = shift - 2*pi
-            retval.y[i] += shift
-        return retval
-
-    def phase(self):
-        retval = self.copy()
-        retval.y = arctan2(imag(self.y), real(self.y))
-        return retval.phasemerging()
 
     def copy(self):
         return SciPro(self.x.copy(), self.y.copy(), ytype=self.ytype, xtype=self.xtype, dtype=self.dtype)
@@ -522,7 +506,7 @@ class SciPro(object):
         ffdata = array([], dtype=double)
         ffdata = append(self.y[ind0:], zeros(dnum, dtype=double))
         ffdata = append(ffdata, self.y[:ind0])
-        ffydata = fftshift(ifft(ffdata))
+        ffydata = ifft(ifftshift(ffdata))
         fmin = abs(self.x[1]-self.x[0])
         ffxdata = linspace(-0.5/fmin, 0.5/fmin, self.x.size+dnum)
         return SciPro(ffxdata, ffydata, ytype='lin')

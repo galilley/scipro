@@ -116,7 +116,7 @@ class Spectrum(SciPro):
 		ffdata = array( [], dtype = double)
 		ffdata = append( sp.y[ind0:], zeros( dnum, dtype = double))
 		ffdata = append( ffdata, sp.y[:ind0])
-		ffydata = abs( fftshift( ifft( ffdata**0.5)))**2
+		ffydata = abs(ifft(ifftshift(ffdata**0.5)))**2
 		fmin = abs(sp.x[1]-sp.x[0])
 		ffxdata = linspace(-0.5/fmin, 0.5/fmin, sp.x.size+dnum)
 		from .oscillogram import Oscillogram

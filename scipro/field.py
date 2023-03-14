@@ -2,7 +2,7 @@
 
 from numpy import abs,exp,complex64,pi,arctan2,real,imag,linspace,zeros,diff,sqrt
 from scipy import optimize, integrate
-from scipy.fftpack import fft,ifft,fftshift,fftfreq
+from scipy.fftpack import fft,ifft,fftshift,ifftshift,fftfreq
 from .scipro import SciPro
 import pylab as pl
 
@@ -38,29 +38,32 @@ class Field(SciPro):
             print('unknown yform')
 	
     def copy(self):
-        return Field( self.x.copy(), self.y.copy(), d=self.domain, cf=self.central_freq)
+        return Field(self.x.copy(), self.y.copy(), d=self.domain, cf=self.central_freq)
 	
-    def phasemerging( self, gap=4./3, shift=0):
-        retval = self.copy()
+    def phasemerged(self, gap=4./3, shift=0):
+        retval = self.abs2()
+        retval.y = arctan2(imag(self.y), real(self.y))
+        phy = retval.y.copy()
         for i in range(1, len(self.y)):
-            if self.y[i-1] - self.y[i] > gap*pi:
+            if phy[i-1] - phy[i] > gap*pi:
                 shift = shift + 2*pi
-            elif self.y[i-1] - self.y[i] < -gap*pi:
+            elif phy[i-1] - phy[i] < -gap*pi:
                 shift = shift - 2*pi
             retval.y[i] += shift
         return retval
 
-    def phase( self):
-        retval = self.copy()
+    def phase(self):
+        retval = self.abs2()
         retval.y = arctan2(imag(self.y), real(self.y))
         return retval
 
     def instfreq(self):
-        retval = self.copy()
-        retval.y = diff(self.phase().phasemerging().y)/(-2*pi*abs(self.x[-1]-self.x[0])/(len(self.x)-1))
+        retval = self.phasemerged()
+        retval.y = diff(retval.y)/(-2*pi*abs(self.x[-1]-self.x[0])/(len(self.x)-1))
+        retval.x = retval.x[:-1]
         return retval
 
-    def add_phase(self, ph = [0.]):
+    def add_phase(self, ph=[0.]):
         """
         :ph: phase as ph_0 + ph_1*(freq-cf) + ph_2*(freq-cf)**2 ... . *Unit: rad*
         """
@@ -87,7 +90,7 @@ class Field(SciPro):
         """
         return: chirp value as a result of parabolic phase fitting
         """
-        ffpartph = self.phase().phasemerging(gap = pgap)
+        ffpartph = self.phasemerged(gap = pgap)
         funclinfit = lambda p, x: p[0]+p[1]*x+p[2]*x**2
         func = lambda p, x, y: (funclinfit(p, x)-y)
         p0 = [ ffpartph.y[0], (ffpartph.y[-1]-ffpartph.y[0])/(ffpartph.x[-1]-ffpartph.x[0]), 0.]
@@ -110,13 +113,19 @@ class Field(SciPro):
         '''
         Fast Fourier transform
         param bool asis: do not perform normalization (True) or keep total energy (False)
+
+        Note:
+            ifftshift is necessary here to align input data in the range of [-t_0/2:t0_/2]
+            to the DFT range [0:t]. For more details see [1] (fourier.py) and [2] (page 325)
+            [1] https://github.com/ncgeib/pypret
+            [2] Hansen E.W., Fourier Transforms: Principles and Applications. John Wiley & Sons, Hoboken 2014 (ISBN: 978-1-118-47914-8)
         '''
         if self.domain == 'time':
             retval = self.copy()
             retval.domain = 'freq'
             dt = abs(self.x[-1]-self.x[0])/(len(self.x)-1)
-            retval.x = fftshift( fftfreq(self.x.size, dt) + self.central_freq)
-            retval.y = fftshift( fft( self.y))
+            retval.x = fftshift(fftfreq(self.x.size, dt) + self.central_freq)
+            retval.y = fftshift(fft(ifftshift(self.y)))
             if not asis:
                 ten = self.power()
                 retval = retval.normpower(ten)
@@ -128,13 +137,15 @@ class Field(SciPro):
         '''
         inverse Fast Fourier transform
         param bool asis: do not perform normalization (True) or keep total energy (False)
+
+        Note: see explanation about one additional fftshift in self.fft
         '''
         if self.domain == 'freq':
             retval = self.copy()
             retval.domain = 'time'
             fmin = abs(self.x[-1]-self.x[0])/(len(self.x)-1)
             retval.x = linspace(-0.5/fmin, 0.5/fmin, self.x.size, False)
-            retval.y = ifft( fftshift(self.y))
+            retval.y = fftshift(ifft(ifftshift(self.y)))
             if not asis:
                 ten = self.power()
                 retval = retval.normpower(ten)
@@ -186,7 +197,7 @@ class Field(SciPro):
             ax1.plot( self.x[0], self.abspower().y[0], *arguments, **keywords)
             # plot one point to shift colors
             ax2.plot( self.x[0], self.phase().y[0], *arguments, **keywords)
-            l2, = ax2.plot( self.x, self.phase().phasemerging(pgap, pshift).y, *arguments, **keywords)
+            l2, = ax2.plot( self.x, self.phasemerged(pgap, pshift).y, *arguments, **keywords)
             ax1.set_ylabel('Intensity, |A|**2')
             ax2.set_ylabel('Phase, rad')
             if self.domain == 'time':
