@@ -2,16 +2,17 @@
 
 from numpy import abs,exp,complex64,pi,arctan2,real,imag,linspace,zeros,diff,sqrt
 from scipy import optimize, integrate
-from scipy.fftpack import fft,ifft,fftshift,ifftshift,fftfreq
+from scipy.fftpack import fft, ifft, fftshift, ifftshift, fftfreq
 from .scipro import SciPro
 import pylab as pl
 
+
 class Field(SciPro):
     '''
-    Field (complex) data, 
+    Field (complex) data,
     yform could be:
         complex [yr] (default)
-        alg [yr+j*yi], 
+        alg [yr+j*yi],
         exp [yr*exp(j*yi)]
     param string d: Domain, time or freq
     '''
@@ -36,10 +37,10 @@ class Field(SciPro):
             SciPro.__init__(self, x, yr*exp(1j*yi), ytype = 'lin', xtype = 'lin', dtype=complex64)
         else:
             print('unknown yform')
-	
+
     def copy(self):
         return Field(self.x.copy(), self.y.copy(), d=self.domain, cf=self.central_freq)
-	
+
     def phasemerged(self, gap=4./3, shift=0):
         retval = self.abs2()
         retval.y = arctan2(imag(self.y), real(self.y))
@@ -77,7 +78,7 @@ class Field(SciPro):
                 phase += ph[i] * (self.x - self.central_freq)**i
         retval.y *= exp(1j*phase)
         return retval
-    
+
     def add_chirp(self, chirp_val):
         """
         :chirp_val: chirp value. *Unit: rad*
@@ -85,7 +86,7 @@ class Field(SciPro):
         retval = self.copy()
         retval.y *= exp(1j*retval.x**2*chirp_val)
         return retval
-    
+
     def chirp(self, pgap = 4./3):
         """
         return: chirp value as a result of parabolic phase fitting
@@ -101,22 +102,22 @@ class Field(SciPro):
     def power(self):
         '''return the power value of the data'''
         return integrate.trapz(real(self.y * self.y.conjugate()), self.x)
-	
-    def normpower(self,pwr=1.):
+
+    def normpower(self, pwr=1.):
         '''normalize power of data to pwr'''
         k = pwr/self.power()
         retval = self.copy()
         retval.y = self.y * sqrt(k)
         return retval
-    
+
     def fft(self, asis=False):
         '''
         Fast Fourier transform
         param bool asis: do not perform normalization (True) or keep total energy (False)
 
         Note:
-            ifftshift is necessary here to align input data in the range of [-t_0/2:t0_/2]
-            to the DFT range [0:t]. For more details see [1] (fourier.py) and [2] (page 325)
+            ifftshift is necessary here to align input data in the range of [-T/2:T/2]
+            to the DFT range [0:T]. For more details see [1] (fourier.py) and [2] (page 325)
             [1] https://github.com/ncgeib/pypret
             [2] Hansen E.W., Fourier Transforms: Principles and Applications. John Wiley & Sons, Hoboken 2014 (ISBN: 978-1-118-47914-8)
         '''
@@ -132,7 +133,7 @@ class Field(SciPro):
         else:
             raise Exception("fft can not be applied to a frequency domain")
         return retval
-    
+
     def ifft(self, asis=False):
         '''
         inverse Fast Fourier transform
@@ -181,7 +182,7 @@ class Field(SciPro):
             pshift = keywords.pop('pshift')
         else:
             pshift = 0
-        
+
         if len(pl.gcf().axes) > 0:
             ax1 = pl.gcf().axes[0]
         else:
@@ -190,7 +191,7 @@ class Field(SciPro):
             ax2 = pl.gcf().axes[1]
         else:
             ax2 = pl.twinx()
-        
+
         if pform == 'abs':
             # save lines to be able to change it later
             l1, = ax1.plot( self.x, self.abspower().y, *arguments, **keywords)
@@ -212,4 +213,3 @@ class Field(SciPro):
         else:
             print('Unknown type '+type+', use \"abs\",\"real\" or \"imag\"')
         return l1, l2
-
