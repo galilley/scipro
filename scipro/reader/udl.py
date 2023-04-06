@@ -5,6 +5,7 @@ from numpy import array, double
 import gzip
 import bz2
 import sys
+import io
 
 """
 if sys.version_info[0] == 3:
@@ -14,12 +15,17 @@ else:
 """
 delimlist = [' ', ',', '\t', ';', None]
 
+
 def fread(filename):
 	'''This function read data from abstract file'''
 	if filename.lower().endswith('.gz'):
 		fp = gzip.GzipFile(filename, 'r')
+		if sys.version_info[0] == 3:
+			fp = io.TextIOWrapper(fp)
 	elif filename.lower().endswith('.bz2'):
 		fp = bz2.BZ2File(filename, 'r')
+		if sys.version_info[0] == 3:
+			fp = io.TextIOWrapper(fp)
 	else:
 		fp = open(filename, 'r')
 
@@ -65,7 +71,8 @@ def fread(filename):
 	for i in range(colcnt):
 		d.append(array([], dtype = double))
 
-	filedata = fp.readlines();
+	filedata = fp.readlines()
+	filedata.insert(0, fstr)
 
 	# check for leading whitespaces
 	if filedata[0] != filedata[0].lstrip():
