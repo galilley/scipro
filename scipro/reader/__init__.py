@@ -12,3 +12,4 @@ from . import mesaphotonics
 from . import osa
 from . import rfsa
 from . import udl
+from . import femtoeasy_msfrog
