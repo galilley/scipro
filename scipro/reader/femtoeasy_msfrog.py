@@ -16,13 +16,10 @@ def fread(filename):
             except KeyError:
                 exif_dict[key] = val
     
-    print(exif_dict)
-
     wl_num = exif_dict['ImageLength'] 
     dt_num = exif_dict['ImageWidth']
 
     model, model_params = exif_dict['Model'].split(';')
-    print(model_params)
     model_params_json = loads(model_params)
 
     temporal_calibration = model_params_json['temporalCalibration']
