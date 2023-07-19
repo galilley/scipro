@@ -1,19 +1,28 @@
 from ..frogtrace import FROGTrace
 import numpy as np
-from PIL import Image, ExifTags
+from PIL import Image, TiffTags
 from  json import loads
 
 def fread(filename):
     '''Reads .tiff femtoeasy MSFrog trace'''
     
     # reading exif dictionary
-    image = Image.open(filename)
-    exif = { ExifTags.TAGS[k]: v for k, v in image.getexif().items() if k in ExifTags.TAGS }
+    with Image.open(filename) as image:
+        raw_exif = image.tag_v2
+        exif_dict = {}
+        for key, val in raw_exif.items():
+            try:
+                exif_dict[TiffTags.TAGS_V2[key].name] = val
+            except KeyError:
+                exif_dict[key] = val
+    
+    print(exif_dict)
 
-    wl_num = exif['ImageLength']  
-    dt_num = exif['ImageWidth']
+    wl_num = exif_dict['ImageLength'] 
+    dt_num = exif_dict['ImageWidth']
 
-    model, model_params = exif['Model'].split(';')
+    model, model_params = exif_dict['Model'].split(';')
+    print(model_params)
     model_params_json = loads(model_params)
 
     temporal_calibration = model_params_json['temporalCalibration']
