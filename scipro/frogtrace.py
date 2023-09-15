@@ -104,7 +104,7 @@ class FROGTrace(SciPro):
             are masked (see OceanOptics dark pixels description and discussion here:
             https://github.com/ap--/python-seabreeze/issues/88).'''
         retval = self.copy()
-        retval.y -= mean(self.y[:, ind])
+        retval.y -= mean(self.y[ind, :])
         return retval
 
     def plot(self, *arguments, **keywords):
