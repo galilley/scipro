@@ -84,7 +84,10 @@ class Field(SciPro):
         :chirp_val: chirp value. *Unit: rad*
         """
         retval = self.copy()
-        retval.y *= exp(1j*retval.x**2*chirp_val)
+        if self.domain == 'time':
+            retval.y *= exp(1j*chirp_val*(retval.x)**2)
+        else:
+            retval.y *= exp(1j*chirp_val*(retval.x - self.central_freq)**2)
         return retval
 
     def chirp(self, pgap = 4./3):
@@ -162,6 +165,14 @@ class Field(SciPro):
         else:
             from .spectrum import Spectrum
             return Spectrum(self.x, rvy, xtype='freq')
+        
+    def spectrogramm(self, width=None):
+        if width is None:
+            width = self.x.max()/10
+        rv = []
+        for x0 in self.x:
+            rv.append((self * exp(-((self.x-x0)/width)**2)).fft().abs2().y)
+        return rv
 
     def plot(self, *arguments, **keywords):
         '''fuction to plot self spectr\nplot(ptype = 'lin', xl = 'Wavelength, nm', yl = 'Intensity, a.u.')'''
