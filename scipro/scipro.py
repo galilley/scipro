@@ -264,7 +264,7 @@ class SciPro(object):
         y = 10*log10(self.y)
         retval = self.copy()
         retval.y = y
-        retval.ytype = 'lin'
+        retval.ytype = 'log'
         return retval
 
     def tolin(self):
@@ -426,7 +426,7 @@ class SciPro(object):
         if self.ytype == 'lin':
             return integrate.trapz(self.y, self.x)
         else:
-            return integrate.trapz(10.**(self.y/10.), self.x)
+            return integrate.trapz(self.tolin().y, self.x)
 
     def every(self, skipnum):
         '''прореживание данных, остаётся только каждая skipnum точка'''

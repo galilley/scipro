@@ -125,17 +125,16 @@ class Spectrum(SciPro):
 	def plot(self, *arguments, **keywords):
 		'''fuction to plot self spectr\nplot(ptype = 'lin', xl = 'Wavelength, nm', yl = 'Intensity, a.u.')'''
 		if 'xl' not in keywords:
-			keywords['xl'] = 'Wavelength, nm'
-		if 'yl' not in keywords:
-			keywords['yl'] = 'Intensity, a.u.'
+			if self.xtype == 'wl':
+				keywords['xl'] = 'Wavelength, nm'
+			else:
+				keywords['xl'] = 'Frequency, THz'
 		if 'ptype' not in keywords:
 			keywords['ptype'] = 'lin'
-		if self.xtype == 'wl':
-			if 'xl' not in keywords:
-				keywords['xl'] = 'Wavelength, nm'
-			SciPro.plot(self, *arguments, **keywords)
-		else:
-			if 'xl' not in keywords:
-				keywords['xl'] = 'Frequency, THz'
-			SciPro.plot(self, *arguments, **keywords)
+		if 'yl' not in keywords:
+			if self.ptype == 'lin':
+				keywords['yl'] = 'Intensity, a.u.'
+			else:
+				keywords['yl'] = 'Intensity, dB.'
+		super(Spectrum, self).plot(self, *arguments, **keywords)
 
