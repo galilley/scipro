@@ -2,13 +2,13 @@
 
 from .scipro import SciPro
 from .field import Field
-from numpy import array, linspace, exp, log, pi, complex, where, select
+from numpy import array, linspace, exp, log, pi, where, select
 from numpy.fft import *
 
 dtnum = 2**6
 
-def gaussianField( freq0, width, lev=0.5, xmax=None, num=None):
-	'''gaussianField( freq0, width, lev=0.5, xmax=None, num=None)'''
+def gaussianField( freq0, width, lev=0.5, x0=0, xmax=None, num=None):
+	'''gaussianField( freq0, width, lev=0.5, x0=0, xmax=None, num=None)'''
 	if num is None and xmax is None:
 		x = linspace(-dtnum*width, dtnum*width, 2*dtnum**2)
 	elif xmax is None:
@@ -18,16 +18,16 @@ def gaussianField( freq0, width, lev=0.5, xmax=None, num=None):
 	else:
 		x = linspace(-xmax, xmax, num)
 	if lev > 0.:
-		y = exp(log(lev)*(2*x/width)**2)
+		y = exp(log(lev)*(2*(x-x0)/width)**2)
 	elif lev < 0.:
-		y = exp(log(10.**(lev/10.))*(2*x/width)**2)
+		y = exp(log(10.**(lev/10.))*(2*(x-x0)/width)**2)
 	else:
 		return None
 	y = y*exp(1j*2*pi*freq0*x)
 	return Field(x,y)
 
-def gaussianIntensity(width, lev=0.5, xmax=1., num=1024):
-	'''gaussianIntensity(width, lev=0.5, xmax=1., num=1024)'''
+def gaussianIntensity(width, lev=0.5, x0=0, xmax=None, num=None):
+	'''gaussianIntensity(width, lev=0.5, x0=0, xmax=1., num=1024)'''
 	if num is None and xmax is None:
 		x = linspace(-dtnum*width, dtnum*width, 2*dtnum**2)
 	elif xmax is None:
@@ -37,15 +37,15 @@ def gaussianIntensity(width, lev=0.5, xmax=1., num=1024):
 	else:
 		x = linspace(-xmax, xmax, num)
 	if lev > 0.:
-		y = exp(log(lev)*(2*x/width)**2)
+		y = exp(log(lev)*(2*(x-x0)/width)**2)
 	elif lev < 0.:
-		y = exp(log(10.**(lev/10.))*(2*x/width)**2)
+		y = exp(log(10.**(lev/10.))*(2*(x-x0)/width)**2)
 	else:
 		return None
 	return SciPro(x,y)
 
-def gaussianFieldChirped( freq0, width, beta2, lev=0.5, xmax=None, num=None):
-	'''gaussianFieldChirped( freq0, width, beta2, lev=0.5, xmax=None, num=None)'''
+def gaussianFieldChirped( freq0, width, beta2, lev=0.5, x0=0, xmax=None, num=None):
+	'''gaussianFieldChirped( freq0, width, beta2, lev=0.5, x0=0, xmax=None, num=None)'''
 	if num is None and xmax is None:
 		x = linspace(-dtnum*width, dtnum*width, 2*dtnum**2)
 	elif xmax is None:
@@ -55,9 +55,9 @@ def gaussianFieldChirped( freq0, width, beta2, lev=0.5, xmax=None, num=None):
 	else:
 		x = linspace(-xmax, xmax, num)
 	if lev > 0.:
-		y = exp(log(lev)*(2*x/width)**2)
+		y = exp(log(lev)*(2*(x-x0)/width)**2)
 	elif lev < 0.:
-		y = exp(log(10.**(lev/10.))*(2*x/width)**2)
+		y = exp(log(10.**(lev/10.))*(2*(x-x0)/width)**2)
 	else:
 		return None
 	y = y*exp(1j*2*pi*freq0*x)
@@ -67,7 +67,7 @@ def gaussianFieldChirped( freq0, width, beta2, lev=0.5, xmax=None, num=None):
 	y = ifft(ffy)
 	return Field(x,y)
 
-def gaussianIntensityChirped( width, beta2, lev=0.5, xmax=None, num=None):
+def gaussianIntensityChirped( width, beta2, lev=0.5, x0=0, xmax=None, num=None):
 	'''gaussianIntensityChirped( width, beta2, lev=0.5, xmax=None, num=None)'''
 	if num is None and xmax is None:
 		x = linspace(-dtnum*width, dtnum*width, 2*dtnum**2)
@@ -78,9 +78,9 @@ def gaussianIntensityChirped( width, beta2, lev=0.5, xmax=None, num=None):
 	else:
 		x = linspace(-xmax, xmax, num)
 	if lev > 0.:
-		y = exp(log(lev)*(2*x/width)**2)
+		y = exp(log(lev)*(2*(x-x0)/width)**2)
 	elif lev < 0.:
-		y = exp(log(10.**(lev/10.))*(2*x/width)**2)
+		y = exp(log(10.**(lev/10.))*(2*(x-x0)/width)**2)
 	else:
 		return None
 	ffy = fft(y**0.5)
