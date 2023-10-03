@@ -132,9 +132,9 @@ class Spectrum(SciPro):
 		if 'ptype' not in keywords:
 			keywords['ptype'] = 'lin'
 		if 'yl' not in keywords:
-			if self.ptype == 'lin':
+			if keywords['ptype'] == 'lin':
 				keywords['yl'] = 'Intensity, a.u.'
 			else:
 				keywords['yl'] = 'Intensity, dB.'
-		super(Spectrum, self).plot(self, *arguments, **keywords)
+		super(Spectrum, self).plot(*arguments, **keywords)
 
