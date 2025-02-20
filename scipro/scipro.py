@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from pylab import plot, grid, show, xlabel, ylabel, clf
-from numpy import alltrue, array, log10, linspace, ndarray, where, append, arange, insert, delete, searchsorted, int32, double, ones, zeros, concatenate, s_, std, arctan2, imag, real, pi, equal, fromfile
-from scipy import integrate, optimize, interp, interpolate
+from numpy import alltrue, array, log10, linspace, ndarray, where, append, arange, insert, delete, searchsorted, int32, double, ones, zeros, concatenate, s_, std, arctan2, imag, real, pi, equal, fromfile, interp
+from scipy import integrate, optimize, interpolate
 from numpy.fft import fftshift, ifftshift, fft, ifft
 
 # TODO: thread safe plot
@@ -47,7 +47,7 @@ class SciPro(object):
                 b = var.convytype('lin')
             else:
                 b = var
-            if alltrue(a.x == b.x):
+            if a.x.shape == b.x.shape and alltrue(a.x == b.x):
                 y = a.y+b.y
             else:
                 if len(a.y.shape) == 1:
@@ -81,7 +81,7 @@ class SciPro(object):
                 b = var.convytype('lin')
             else:
                 b = var
-            if alltrue(self.x == b.x):
+            if a.x.shape == b.x.shape and alltrue(self.x == b.x):
                 self.y += b.y
             else:
                 if len(self.y.shape) == 1:
@@ -404,9 +404,9 @@ class SciPro(object):
     def xMean(self):
         '''return x with intensity in center by fwhm'''
         if self.ytype == 'lin':
-            tmp = self.wl[where(self.y >= max(self.y)/2.)]
+            tmp = self.x[where(self.y >= max(self.y)/2.)]
         else:
-            tmp = self.wl[where(self.y >= max(self.y)-3.)]
+            tmp = self.x[where(self.y >= max(self.y)-3.)]
         return (tmp+tmp)/2.0
 
     def pPeak(self):

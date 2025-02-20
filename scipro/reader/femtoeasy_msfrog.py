@@ -1,11 +1,27 @@
 from ..frogtrace import FROGTrace
+from ..acf import ACF
+from ..spectrum import Spectrum
+from ..field import Field
 import numpy as np
 from PIL import Image, TiffTags
-from  json import loads
+from json import loads
 
-def fread(filename):
+
+def fread(dirname):
+    '''
+        Read all available data
+        return: [FROG, ACF, spectum, field]
+    '''
+    # os.join(dirname, dirname+"_Acquisition-Raw_Image.tiff")
+    # TODO
+    pass
+
+
+
+
+def fread_frog(filename):
     '''Reads .tiff femtoeasy MSFrog trace'''
-    
+
     # reading exif dictionary
     with Image.open(filename) as image:
         raw_exif = image.tag_v2
@@ -15,8 +31,8 @@ def fread(filename):
                 exif_dict[TiffTags.TAGS_V2[key].name] = val
             except KeyError:
                 exif_dict[key] = val
-    
-    wl_num = exif_dict['ImageLength'] 
+
+    wl_num = exif_dict['ImageLength']
     dt_num = exif_dict['ImageWidth']
 
     model, model_params = exif_dict['Model'].split(';')
@@ -30,9 +46,9 @@ def fread(filename):
     monoms = [coef*lin**(n_coefs - 1 - n) for n, coef in enumerate(polynom_coefs)]
     vwl = np.sum(np.array(monoms), axis=0)
 
-    dt_lower = -temporal_calibration*(dt_num-1)/2 * 1e-3 #psec
-    dt_upper = temporal_calibration*(dt_num-1)/2 * 1e-3  #psec    
+    dt_lower = -temporal_calibration*(dt_num-1)/2 * 1e-3 # psec
+    dt_upper = temporal_calibration*(dt_num-1)/2 * 1e-3  # psec    
     vt = np.linspace(dt_lower, dt_upper, dt_num)
 
-    amplitude = np.array(Image.open(filename))
+    amplitude = np.array(Image.open(filename)).astype(np.float32)
     return FROGTrace(np.array(np.meshgrid(vt, vwl)), amplitude)
