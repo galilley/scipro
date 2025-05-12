@@ -23,7 +23,7 @@ def fread(filename):
     fd.close()
     if not isclose(v2/v1, int(v2/v1)):
         print("Warning: the array size is not a multiple of the spectrum size")
-    vt = 1e-3*linspace(-0.5*v2/v1*v3*v4, 0.5*v2/v1*v3*v4, int(v2/v1))
+    vt = 1e-3*linspace(-0.5*(v2/v1-1)*v3*v4, 0.5*(v2/v1-1)*v3*v4, int(v2/v1))
     vz = array(d.tolist())
     vzarr = vz.reshape(-1, int(v2/v1))
     print( "file ", filename)

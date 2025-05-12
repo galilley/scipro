@@ -230,9 +230,9 @@ class SciPro(object):
     def __idiv__(self, var):
         if type(var) is type(self):
             if self.ytype == 'lin':
-                self.linI /= interp(self.x, var.x, var.y, left=0., right=0.)
+                self.y /= interp(self.x, var.x, var.y, left=0., right=0.)
             else:
-                self.logI -= interp(self.x, var.x, var.y, left=0., right=0.)
+                self.y -= interp(self.x, var.x, var.y, left=0., right=0.)
         elif type(var) is int or float:
             if self.ytype == 'lin':
                 self.y /= var
@@ -391,7 +391,7 @@ class SciPro(object):
 
     def xPeak(self):
         '''return x with peak intensity'''
-        return self.x[where(self.y == max(self.y))[0][0]]
+        return self.x[self.y.argmax()]
 
     def weightedMean(self):
         '''return mean X weighted by Y'''
@@ -399,7 +399,7 @@ class SciPro(object):
 
     def xMin(self):
         '''return x with min intensity'''
-        return self.x[where(self.linI == min(self.linI))[0][0]]
+        return self.x[self.y.argmin()]
 
     def xMean(self):
         '''return x with intensity in center by fwhm'''
@@ -407,7 +407,7 @@ class SciPro(object):
             tmp = self.x[where(self.y >= max(self.y)/2.)]
         else:
             tmp = self.x[where(self.y >= max(self.y)-3.)]
-        return (tmp+tmp)/2.0
+        return (tmp[0]+tmp[-1])/2.0
 
     def pPeak(self):
         '''return max value'''

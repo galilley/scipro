@@ -9,7 +9,7 @@ class ACF(SciPro):
 	def __init__(self, x = None, y = None):
 		SciPro.__init__(self, x, y, ytype = 'lin', xtype = 'lin', dtype=double)
 
-	def split(self):
+	def split_series(self):
 		'''split series'''
 		indmaxsample = nonzero( select( [self.x > (max(self.x)*0.9+min(self.x)*0.1), self.x < (max(self.x)*0.1+min(self.x)*0.9)], [1, 1]) > 0)
 		dind = diff( indmaxsample)
