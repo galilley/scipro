@@ -165,7 +165,7 @@ class Field(SciPro):
             raise Exception("ifft can not be applied to a time domain")
         return retval
 
-    def abs2(self, p=2):
+    def abspower(self, p=2):
         rvy = real(self.y * self.y.conjugate())**(p/2.)
         if self.domain == 'time':
             from .oscillogram import Oscillogram
@@ -173,6 +173,9 @@ class Field(SciPro):
         else:
             from .spectrum import Spectrum
             return Spectrum(self.x, rvy, xtype='freq')
+
+    def abs2(self):
+        return self.abspower(2)
 
     def spectrogramm(self, width=None):
         if width is None:
@@ -216,11 +219,12 @@ class Field(SciPro):
 
         if pform == 'abs':
             # save lines to be able to change it later
-            l1, = ax1.plot(self.x, self.abspower().y, *arguments, **keywords)
-            ax1.plot(self.x[0], self.abspower().y[0], *arguments, **keywords)
+            l1, = ax1.plot(self.x, self.abs2().y, *arguments, **keywords)
+            ax1.plot(self.x[0], self.abs2().y[0], *arguments, **keywords)
             # plot one point to shift colors
             ax2.plot(self.x[0], self.phase().y[0], *arguments, **keywords)
-            l2, = ax2.plot(self.x, self.phasemerged(pgap, pshift).y, *arguments, **keywords)
+            l2, = ax2.plot(self.x, self.phasemerged(pgap, pshift).y,
+                           *arguments, **keywords)
             ax1.set_ylabel('Intensity, |A|**2')
             ax2.set_ylabel('Phase, rad')
             if self.domain == 'time':
@@ -229,9 +233,11 @@ class Field(SciPro):
                 ax1.set_xlabel('Frequency, THz')
             pl.sca(ax1)
         elif pform == 'real':
-            super(Field, self).plot(self.x, real(self.y), *arguments, **keywords)
+            super(Field, self).plot(self.x, real(self.y),
+                                    *arguments, **keywords)
         elif pform == 'imag':
-            super(Field, self).plot(self.x, imag(self.y), *arguments, **keywords)
+            super(Field, self).plot(self.x, imag(self.y),
+                                    *arguments, **keywords)
         else:
             print('Unknown type '+type+', use \"abs\",\"real\" or \"imag\"')
         return l1, l2
