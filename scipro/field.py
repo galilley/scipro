@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from numpy import abs,exp,complex64,pi,arctan2,real,imag,linspace,zeros,diff,sqrt
+from numpy import abs, exp, complex64, pi, arctan2
+from numpy import real, imag, linspace, zeros, diff, sqrt
 from scipy import optimize, integrate
 from scipy.fftpack import fft, ifft, fftshift, ifftshift, fftfreq
 from .scipro import SciPro
@@ -16,7 +17,7 @@ class Field(SciPro):
         exp [yr*exp(j*yi)]
     param string d: Domain, time or freq
     '''
-    def __init__(self, x = None, yr = None, yi = None, yform = None, d='time', cf=0.0):
+    def __init__(self, x=None, yr=None, yi=None, yform=None, d='time', cf=0.0):
         self.domain = d
         self.central_freq = cf
         if yr is None and yi is None:
@@ -30,16 +31,20 @@ class Field(SciPro):
             yform = 'complex'
 
         if yform == 'complex':
-            SciPro.__init__(self, x, yr, ytype = 'lin', xtype = 'lin', dtype=complex64)
+            SciPro.__init__(self, x, yr,
+                            ytype='lin', xtype='lin', dtype=complex64)
         elif yform == 'alg':
-            SciPro.__init__(self, x, yr + 1j*yi, ytype = 'lin', xtype = 'lin', dtype=complex64)
+            SciPro.__init__(self, x, yr + 1j*yi,
+                            ytype='lin', xtype='lin', dtype=complex64)
         elif yform == 'exp':
-            SciPro.__init__(self, x, yr*exp(1j*yi), ytype = 'lin', xtype = 'lin', dtype=complex64)
+            SciPro.__init__(self, x, yr*exp(1j*yi),
+                            ytype='lin', xtype='lin', dtype=complex64)
         else:
             print('unknown yform')
 
     def copy(self):
-        return Field(self.x.copy(), self.y.copy(), d=self.domain, cf=self.central_freq)
+        return Field(self.x.copy(), self.y.copy(),
+                     d=self.domain, cf=self.central_freq)
 
     def phasemerged(self, gap=4./3, shift=0):
         retval = self.abs2()
@@ -66,7 +71,7 @@ class Field(SciPro):
 
     def add_phase(self, ph=[0.]):
         """
-        :ph: phase as ph_0 + ph_1*(freq-cf) + ph_2*(freq-cf)**2 ... . *Unit: rad*
+        :ph: phase as ph_0 + ph_1*(freq-cf) + ph_2*(freq-cf)**2 ... *Unit: rad*
         """
         retval = self.copy()
         phase = zeros(self.x.size)
@@ -90,15 +95,17 @@ class Field(SciPro):
             retval.y *= exp(1j*chirp_val*(retval.x - self.central_freq)**2)
         return retval
 
-    def chirp(self, pgap = 4./3):
+    def chirp(self, pgap=4./3):
         """
         return: chirp value as a result of parabolic phase fitting
         """
-        ffpartph = self.phasemerged(gap = pgap)
+        ffpartph = self.phasemerged(gap=pgap)
         funclinfit = lambda p, x: p[0]+p[1]*x+p[2]*x**2
         func = lambda p, x, y: (funclinfit(p, x)-y)
-        p0 = [ ffpartph.y[0], (ffpartph.y[-1]-ffpartph.y[0])/(ffpartph.x[-1]-ffpartph.x[0]), 0.]
-        p = optimize.leastsq( 
+        p0 = [ffpartph.y[0],
+              (ffpartph.y[-1]-ffpartph.y[0])/(ffpartph.x[-1]-ffpartph.x[0]),
+              0.]
+        p = optimize.leastsq(
                 func, p0, args=(ffpartph.x, ffpartph.y))
         return p[0][2]
 
@@ -116,7 +123,8 @@ class Field(SciPro):
     def fft(self, asis=False):
         '''
         Fast Fourier transform
-        param bool asis: do not perform normalization (True) or keep total energy (False)
+        param bool asis: do not perform normalization (True) or
+                            keep total energy (False)
 
         Note:
             ifftshift is necessary here to align input data in the range of [-T/2:T/2]
@@ -157,7 +165,7 @@ class Field(SciPro):
             raise Exception("ifft can not be applied to a time domain")
         return retval
 
-    def abs2(self, p = 2):
+    def abs2(self, p=2):
         rvy = real(self.y * self.y.conjugate())**(p/2.)
         if self.domain == 'time':
             from .oscillogram import Oscillogram
@@ -165,7 +173,7 @@ class Field(SciPro):
         else:
             from .spectrum import Spectrum
             return Spectrum(self.x, rvy, xtype='freq')
-        
+
     def spectrogramm(self, width=None):
         if width is None:
             width = self.x.max()/10
@@ -175,7 +183,10 @@ class Field(SciPro):
         return rv
 
     def plot(self, *arguments, **keywords):
-        '''fuction to plot self spectr\nplot(ptype = 'lin', xl = 'Wavelength, nm', yl = 'Intensity, a.u.')'''
+        '''
+        function to plot self spectr\n
+        plot(ptype = 'lin', xl = 'Wavelength, nm', yl = 'Intensity, a.u.')
+        '''
         #TODO ptype = log
         #if not keywords.has_key( 'xl'):
         #    keywords['xl'] = 'Wavelength, nm'
@@ -205,11 +216,11 @@ class Field(SciPro):
 
         if pform == 'abs':
             # save lines to be able to change it later
-            l1, = ax1.plot( self.x, self.abspower().y, *arguments, **keywords)
-            ax1.plot( self.x[0], self.abspower().y[0], *arguments, **keywords)
+            l1, = ax1.plot(self.x, self.abspower().y, *arguments, **keywords)
+            ax1.plot(self.x[0], self.abspower().y[0], *arguments, **keywords)
             # plot one point to shift colors
-            ax2.plot( self.x[0], self.phase().y[0], *arguments, **keywords)
-            l2, = ax2.plot( self.x, self.phasemerged(pgap, pshift).y, *arguments, **keywords)
+            ax2.plot(self.x[0], self.phase().y[0], *arguments, **keywords)
+            l2, = ax2.plot(self.x, self.phasemerged(pgap, pshift).y, *arguments, **keywords)
             ax1.set_ylabel('Intensity, |A|**2')
             ax2.set_ylabel('Phase, rad')
             if self.domain == 'time':
