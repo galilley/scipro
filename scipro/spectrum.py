@@ -95,7 +95,7 @@ class Spectrum(SciPro):
 	def omega2mean(self, x0 = None):
 		if x0 is None:
 			x0 = self.lmean()
-		return integrate.trapz(self.tolin().y*(self.x-x0)**2, self.x)/integrate.trapz(self.tolin().y, self.x)
+		return integrate.trapezoid(self.tolin().y*(self.x-x0)**2, self.x)/integrate.trapezoid(self.tolin().y, self.x)
 
 	def fft(self, fakerange = 1.):
 		'''

@@ -111,7 +111,7 @@ class Field(SciPro):
 
     def power(self):
         '''return the power value of the data'''
-        return integrate.trapz(real(self.y * self.y.conjugate()), self.x)
+        return integrate.trapezoid(real(self.y * self.y.conjugate()), self.x)
 
     def normpower(self, pwr=1.):
         '''normalize power of data to pwr'''

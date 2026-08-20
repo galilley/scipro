@@ -131,10 +131,10 @@ class RFL:
                 K.fill(tmpk)
             pout = array([])
             for i in range(len(pYDFL)):
-                pout = append(pout, integrate.trapz(0.5*self.delta(wl)*self.inSpectr(wl, self.inpow(pYDFL[i]), K[i]), wl))
+                pout = append(pout, integrate.trapezoid(0.5*self.delta(wl)*self.inSpectr(wl, self.inpow(pYDFL[i]), K[i]), wl))
         else:
             pcur = pYDFL
-            pout = integrate.trapz(0.5*self.delta(wl)*self.inSpectr(wl, self.inpow(pcur), K), wl)
+            pout = integrate.trapezoid(0.5*self.delta(wl)*self.inSpectr(wl, self.inpow(pcur), K), wl)
         return pout
 
     def infwhm(self, pYDFL, K = None):

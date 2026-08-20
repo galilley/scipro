@@ -428,9 +428,9 @@ class SciPro(object):
     def power(self):
         '''return power of all data'''
         if self.ytype == 'lin':
-            return integrate.trapz(self.y, self.x)
+            return integrate.trapezoid(self.y, self.x)
         else:
-            return integrate.trapz(self.tolin().y, self.x)
+            return integrate.trapezoid(self.tolin().y, self.x)
 
     def every(self, skipnum):
         '''прореживание данных, остаётся только каждая skipnum точка'''
@@ -473,9 +473,9 @@ class SciPro(object):
     def x2Mean(self):
         x0 = self.xMean()
         if self.ytype == 'lin':
-            return integrate.trapz(self.y*(self.x-x0)**2, self.x)/integrate.trapz(self.y, self.x)
+            return integrate.trapezoid(self.y*(self.x-x0)**2, self.x)/integrate.trapezoid(self.y, self.x)
         else:
-            return integrate.trapz(10.**(self.y/10.)*(self.x-x0)**2, self.x)/integrate.trapz(10.**(self.y/10.), self.x)
+            return integrate.trapezoid(10.**(self.y/10.)*(self.x-x0)**2, self.x)/integrate.trapezoid(10.**(self.y/10.), self.x)
 
     def reverse(self):
         retval = self.copy()
@@ -519,7 +519,7 @@ class SciPro(object):
         '''int(E(t)*E*(t-tau),dt)'''
         d = arange(self.x.size*2-1, dtype=double)
         for i in range(1, self.x.size+1):
-            d[i-1] = d[d.size-i] = integrate.trapz(self.y[-i:]*self.y[:i].conj(), self.x[:i])
+            d[i-1] = d[d.size-i] = integrate.trapezoid(self.y[-i:]*self.y[:i].conj(), self.x[:i])
         dx = abs(self.x[1]-self.x[0])
         x = linspace(-dx*self.x.size, dx*self.x.size, self.x.size*2-1)
         return SciPro(x, d)
@@ -530,7 +530,7 @@ class SciPro(object):
         dx = abs(self.x[1]-self.x[0])
         for i in range(1, self.x.size+1):
             valarr = concatenate((self.y[:-i], self.y[-i:]+self.y[:i], self.y[i:]))
-            d[i-1] = d[d.size-i] = integrate.trapz( valarr*valarr.conj(), dx=dx)
+            d[i-1] = d[d.size-i] = integrate.trapezoid( valarr*valarr.conj(), dx=dx)
         x = linspace(-dx*self.x.size, dx*self.x.size, self.x.size*2-1)
         return SciPro(x, d)
 
@@ -538,7 +538,7 @@ class SciPro(object):
         '''int(I(t)*I(t-tau),dt)'''
         d = arange(self.x.size*2-1, dtype=double)
         for i in range(1, self.x.size+1):
-            d[i-1] = d[d.size-i] = integrate.trapz(self.y[-i:]*self.y[:i], self.x[:i])
+            d[i-1] = d[d.size-i] = integrate.trapezoid(self.y[-i:]*self.y[:i], self.x[:i])
         dx = abs(self.x[1]-self.x[0])
         x = linspace(-dx*self.x.size, dx*self.x.size, self.x.size*2-1)
         return SciPro(x, d)
@@ -549,7 +549,7 @@ class SciPro(object):
         dx = abs(self.x[1]-self.x[0])
         for i in range(1, self.x.size+1):
             valarr = concatenate((self.y[:-i]**2, (self.y[-i:]+self.y[:i])**2, self.y[i:]**2))
-            d[i-1] = d[d.size-i] = integrate.trapz(valarr*valarr.conj(), dx=dx)
+            d[i-1] = d[d.size-i] = integrate.trapezoid(valarr*valarr.conj(), dx=dx)
         x = linspace(-dx*self.x.size, dx*self.x.size, self.x.size*2-1)
         return SciPro(x, d)
 
@@ -560,7 +560,7 @@ class SciPro(object):
         d = arange(int(round(tm/dx))*2+1, dtype=double)
         t = linspace(-tm, tm, d.size)
         for i in range(d.size):
-            d[i] = integrate.trapz(interp(t, self.x, self.y, 0.0, 0.0)*interp(t + t[-(i+1)], val.x, val.y, 0.0, 0.0), t)
+            d[i] = integrate.trapezoid(interp(t, self.x, self.y, 0.0, 0.0)*interp(t + t[-(i+1)], val.x, val.y, 0.0, 0.0), t)
         return SciPro(t, d)
 
     def fftIntensityFilter(self, width=0.9):
