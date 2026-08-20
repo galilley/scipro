@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pylab import plot, grid, show, xlabel, ylabel, clf
-from numpy import alltrue, array, log10, linspace, ndarray, where, append, arange, insert, delete, searchsorted, int32, double, ones, zeros, concatenate, s_, std, arctan2, imag, real, pi, equal, fromfile, interp
+from numpy import alltrue, array, log10, linspace, ndarray, where, append, arange, insert, delete, searchsorted, int32, double, ones, zeros, concatenate, s_, std, arctan2, imag, real, pi, equal, fromfile, interp, meshgrid
 from scipy import integrate, optimize, interpolate
 from numpy.fft import fftshift, ifftshift, fft, ifft
 
@@ -53,8 +53,9 @@ class SciPro(object):
                 if len(a.y.shape) == 1:
                     y = a.y + interp(a.x, b.x, b.y, left=0., right=0.)
                 elif len(a.y.shape) == 2:
-                    f = interpolate.interp2d(b.x[0][0], b.x[1].T[0], b.y, kind='cubic', fill_value=0)
-                    y = a.y + f(a.x[0][0], a.x[1].T[0])
+                    f = interpolate.RegularGridInterpolator((b.x[0][0], b.x[1].T[0]), b.y.T, method='cubic', bounds_error=False, fill_value=0)
+                    Xn, Yn = meshgrid(a.x[0][0], a.x[1].T[0], indexing='ij')
+                    y = a.y + f((Xn, Yn)).T
                 else:
                     raise IndexError('Unsupported shape of the argument ({})'.format(a.y.shape))
 
@@ -87,8 +88,9 @@ class SciPro(object):
                 if len(self.y.shape) == 1:
                     self.y += interp(self.x, b.x, b.y, left=0., right=0.)
                 elif len(self.y.shape) == 2:
-                    f = interpolate.interp2d(b.x[0][0], b.x[1].T[0], b.y, kind='cubic', fill_value=0)
-                    self.y += f(self.x[0][0], self.x[1].T[0])
+                    f = interpolate.RegularGridInterpolator((b.x[0][0], b.x[1].T[0]), b.y.T, method='cubic', bounds_error=False, fill_value=0)
+                    Xn, Yn = meshgrid(self.x[0][0], self.x[1].T[0], indexing='ij')
+                    self.y += f((Xn, Yn)).T
                 else:
                     raise IndexError('Unsupported shape of the argument ({})'.format(self.y.shape))
         elif type(var) is int or float:
@@ -115,8 +117,9 @@ class SciPro(object):
                 if len(a.y.shape) == 1:
                     y = a.y - interp(a.x, b.x, b.y, left=0., right=0.)
                 elif len(a.y.shape) == 2:
-                    f = interpolate.interp2d(b.x[0][0], b.x[1].T[0], b.y, kind='cubic', fill_value=0)
-                    y = a.y - f(a.x[0][0], a.x[1].T[0])
+                    f = interpolate.RegularGridInterpolator((b.x[0][0], b.x[1].T[0]), b.y.T, method='cubic', bounds_error=False, fill_value=0)
+                    Xn, Yn = meshgrid(a.x[0][0], a.x[1].T[0], indexing='ij')
+                    y = a.y - f((Xn, Yn)).T
                 else:
                     raise IndexError('Unsupported shape of the argument ({})'.format(a.y.shape))
         elif type(var) is int or float:
@@ -148,8 +151,9 @@ class SciPro(object):
                 if len(self.y.shape) == 1:
                     self.y -= interp(self.x, b.x, b.y, left=0., right=0.)
                 elif len(self.y.shape) == 2:
-                    f = interpolate.interp2d(b.x[0][0], b.x[1].T[0], b.y, kind='cubic', fill_value=0)
-                    self.y -= f(self.x[0][0], self.x[1].T[0])
+                    f = interpolate.RegularGridInterpolator((b.x[0][0], b.x[1].T[0]), b.y.T, method='cubic', bounds_error=False, fill_value=0)
+                    Xn, Yn = meshgrid(self.x[0][0], self.x[1].T[0], indexing='ij')
+                    self.y -= f((Xn, Yn)).T
                 else:
                     raise IndexError('Unsupported shape of the argument ({})'.format(self.y.shape))
         elif type(var) is int or float:
